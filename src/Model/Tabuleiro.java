@@ -13,6 +13,7 @@ public class Tabuleiro{
         poloSul = new Casa();
     	poloSul.setPolo(0);
     	poloNorte.setPolo(1);
+
     	
     	board = new Casa[12][12];
     	board[3][1].setSpecial(0);
@@ -27,10 +28,12 @@ public class Tabuleiro{
     	board[7][11].setSpecial(1);
     	board[6][4].setSpecial(2);
     	board[6][10].setSpecial(2);
+        //Comment
     	
     	
     	
     	
+
     }
 
     /* Geters and Seters*/
