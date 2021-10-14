@@ -44,8 +44,14 @@ public class Casa{
 		
     }
     
-    public void setSpecial() {
+    public void setSpecial(int n) {
     	this.isSpecial = true;
+    	/*
+    	if (n == 0) inicializa ficha vermelha na esquerda (theta 1)
+    	else if (n == 1) inicializa ficha vermelha no centro (theta 2)
+    	else if (n == 2) inicializa ficha vermelha na direita (theta 3)
+    	else erro
+    	*/
     }
     
     
