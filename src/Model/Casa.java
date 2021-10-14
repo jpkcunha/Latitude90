@@ -11,7 +11,7 @@ public class Casa{
     public Casa() {
     	this.isSpecial = false;
     	this.posX = 0;
-    	this.posY= 0;
+    	this.posY = 0;
     }
 
     public Casa(int posX, int posY) {
@@ -74,7 +74,7 @@ public class Casa{
     	
     	/*
     	 * Cada objeto casa terá uma lista de 3 pares coordenados - posicoes
-    	 * As posições 0 e 2 serão ocupadas por peças; a posicao 1 é referente a ficha vermelha, 
+    	 * Duas posições serão ocupadas por peças; a outra é referente à ficha vermelha, 
     	 * se a casa for especial (isSpecial = true) 
     	 */
     	
