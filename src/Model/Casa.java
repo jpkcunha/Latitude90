@@ -4,6 +4,8 @@ public class Casa{
 
     private boolean isSpecial;
     private boolean isFull;
+    private int posX;
+    private int posY;
     private int[][] posicoes;
     private Peao[] peoes;
 
@@ -12,6 +14,11 @@ public class Casa{
     	this.isFull = false;
     }
 
+    
+    public void setPosX(int x) {
+    	this.posX = x;
+    }
+    
     public void setPolo(int polo) {
     	int[] centro;
     	this.posicoes = new int [][] {{-18, 16}, {0, 24}, {18, 16}, {-18, -16}, {0, -24}, {18, -16}};

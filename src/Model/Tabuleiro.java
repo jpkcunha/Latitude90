@@ -87,8 +87,14 @@ public class Tabuleiro{
     }
     
     
-   
+    
+    
+    //x -> longitude
+    //y -> latitude
     public boolean verificaMovimento(int xIni, int yIni, int xFin, int yFin, int n) {
+    	
+    	//Clica na mesma
+    	if (xIni == xFin && yIni == yFin) return false;
     	
     	//PoloSul
     	if (yIni == -1) return verificaBaixo(xFin, yIni, yFin, n);
@@ -99,14 +105,14 @@ public class Tabuleiro{
     	//Movimentação dentro da mesma latitude
     	if (yIni == yFin) return verificaDireita(xIni, xFin, yIni, n) || verificaEsquerda(xIni, xFin, yIni, n); 
     	
-    	//Movimentação vertical sem chegar nos polos
-    	if (verificaBaixo(xIni, yIni, yFin, n) || verificaCima(xIni, yIni, yFin, n)) return true;
-
     	//Chega no polo sul
     	if (verificaCima(xIni, yIni, -1, yIni + 1)) return verificaBaixo(xFin, -1, yFin, n - (yIni + 1));
 
     	//Chega no polo norte
     	if (verificaBaixo(xIni, yIni, 12, 12 - yIni)) return verificaCima(xFin, 12, yFin, n - (12 - yIni));
+
+    	//Movimentação vertical sem chegar nos polos
+    	if (verificaBaixo(xIni, yIni, yFin, n) || verificaCima(xIni, yIni, yFin, n)) return true;
     	
     	return false;
     	
@@ -125,9 +131,4 @@ public class Tabuleiro{
         return board;
     }
     
-    public void movimenta() {
-    	
-    }
-
-
 }
