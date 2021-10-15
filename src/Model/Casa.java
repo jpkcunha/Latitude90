@@ -19,14 +19,23 @@ public class Casa{
     	this.posX = x;
     }
     
+
+    public void setPosY(int y) {
+    	this.posY = y;
+    }
+    
     public void setPolo(int polo) {
     	int[] centro;
     	this.posicoes = new int [][] {{-18, 16}, {0, 24}, {18, 16}, {-18, -16}, {0, -24}, {18, -16}};
     	
     	if (polo == 0) { //Polo Sul
+    		posX = -1;
+    		posY = -1;
     		centro = new int[] {203, 332};
     	}
     	else if (polo == 1) { //Polo Norte
+    		posX = 12;
+    		posY = 12;
     		centro = new int[] {545, 332};
     	}
     	else return;
@@ -63,9 +72,22 @@ public class Casa{
     	return;
     }
     
+    
+    //Retorna a posicao do peao na casa ou -1 se inexistente
+    public int verificaPeao(Jogador j) {
+    	for (int i = 0; i < this.peoes.length; i ++) {
+    		if (peoes[i].getCor() == j.getCor()) return i;
+    	}
+    	return -1;
+    }
+    
     public boolean getIsSpecial() {return isSpecial;}
     
     public boolean getIsFull() {return isFull;}
+
+    public int getPosX() {return posX;}
+    
+    public int getPosY() {return posY;}
 
 
 }
