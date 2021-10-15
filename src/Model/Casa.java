@@ -3,20 +3,13 @@ package Model;
 public class Casa{
 
     private boolean isSpecial;
-    private int posX;
-    private int posY;
+    private boolean isFull;
     private int[][] posicoes;
     private Peao[] peoes;
 
     public Casa() {
     	this.isSpecial = false;
-    	this.posX = 0;
-    	this.posY = 0;
-    }
-
-    public Casa(int posX, int posY) {
-    	this.posX = posX;
-    	this.posY= posY;
+    	this.isFull = false;
     }
 
     public void setPolo(int polo) {
@@ -25,14 +18,9 @@ public class Casa{
     	
     	if (polo == 0) { //Polo Sul
     		centro = new int[] {203, 332};
-    		this.posX = -1;
-    		this.posY = -1;
     	}
     	else if (polo == 1) { //Polo Norte
     		centro = new int[] {545, 332};
-    		this.posX = 12;
-    		this.posY = 12;
-    		
     	}
     	else return;
     	
@@ -40,8 +28,6 @@ public class Casa{
     		posicoes[i][0] += centro[0];
     		posicoes[i][1] += centro[1];
     	}
-    	
-		
     }
     
     public void setSpecial(int n) {
@@ -54,23 +40,12 @@ public class Casa{
     	*/
     }
     
-    
-    public void setPos_x(int pos_x) {
-        this.posX = pos_x;
-    }
-
-    
-    public void setPos_y(int pos_y) {
-        this.posY = pos_y;
-    }
-    
-
-    
     //Calcula posicoes para uma determinada casa;
     public void setPos() {
     	int[] centro;
-    	if (this.posX < 6) centro = new int[] {203, 332};
-    	else centro = new int[] {545, 332};
+    	
+    	//if (this.posX < 6) centro = new int[] {203, 332};
+    	//else centro = new int[] {545, 332};
     	
     	/*
     	 * Cada objeto casa terá uma lista de 3 pares coordenados - posicoes
@@ -81,17 +56,9 @@ public class Casa{
     	return;
     }
     
-
-    public int getPos_x() {
-        return posX;
-    }
-
-    public int getPos_y() {
-        return posY;
-    }
-
     public boolean getIsSpecial() {return isSpecial;}
-
+    
+    public boolean getIsFull() {return isFull;}
 
 
 }
