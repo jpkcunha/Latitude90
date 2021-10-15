@@ -111,23 +111,61 @@ public class Tabuleiro{
     }
     
     
-    public boolean verificaJogada(Jogador j, Casa inicio, Casa fim, int n1, int n2) {
+    public int verificaJogada(Jogador j, Casa inicio, Casa fim, int n1, int n2) {
     	
     	int pos = inicio.verificaPeao(j);
     	
     	//Jogador não contem peao dentro da casa inicial
-    	if (pos == -1) return false;
+    	if (pos == -1) return 0;
     	
-    	int xIni, yIni, xFin, yFin;
+    	int xIni, yIni, xFin, yFin, maior, menor;
     	
     	xIni = inicio.getPosX();
     	yIni = inicio.getPosY();
     	xFin = fim.getPosX();
-    	yFin = fim.getPosX();
+    	yFin = fim.getPosY();
+    	
+    	if (n1 > n2) {
+    		maior = n1;
+    		menor = n2;
+    	}
+    	else { //Função não é chamada quando os dados são iguais ==> dado especial
+    		maior = n2;
+    		menor = n1;
+    	}
+    	
+    	//A jogada é possível utilizando somente o menor dado? (inclui passar pelos polos)
+    	if (verificaMovimento(xIni, yIni, xFin, yFin, menor)) return menor;
+    	
+    	//A jogada é possível utilizando somente o maior dado? (inclui passar pelos polos)
+    	if (verificaMovimento(xIni, yIni, xFin, yFin, maior)) return maior;
+    	
+    	//A jogada é possível utilizando um movimento único com a soma dos dados? (inclui passar pelos polos)
+    	if (verificaMovimento(xIni, yIni, xFin, yFin, maior + menor)) return maior + menor;
+    	
+    	/* A jogada é possível em L (cada dado em uma direção)?
+    	 * - Vertical com o menor dado e depois horizontal com o maior dado
+    	 * - Vertical com o maior dado e depois horizontal com o menor dado
+    	 * - Horizontal com o menor dado e depois vertical com o maior dado
+    	 * - Horizontal com o maior dado e depois vertical com o menor dado
+    	 * - Vertical com o menor dado e depois vertical com o maior dado (passando pelos polos)
+    	 * - Vertical com o maior dado e depois vertical com o menor dado (passando pelos polos)
+    	 * OBS.: Sem casas bloqueadas, se houver caminho há 2 possíveis
+    	 */
+    	
+    	if ((verificaMovimento(xIni, yIni, xIni, yFin, menor) && verificaMovimento(xIni, yFin, xFin, yFin, maior)) || 
+           (verificaMovimento(xIni, yIni, xIni, yFin, maior) && verificaMovimento(xIni, yFin, xFin, yFin, menor)) ||
+           (verificaMovimento(xIni, yIni, xFin, yIni, menor) && verificaMovimento(xFin, yIni, xFin, yFin, maior)) ||
+           (verificaMovimento(xIni, yIni, xFin, yIni, maior) && verificaMovimento(xFin, yIni, xFin, yFin, menor)) || 
+           (verificaMovimento(xIni, yIni, xIni, yFin, menor) && verificaMovimento(xFin, yIni, xFin, yFin, maior)) || 
+           (verificaMovimento(xIni, yIni, xIni, yFin, maior) && verificaMovimento(xFin, yIni, xFin, yFin, menor))) {
+    		return maior + menor;
+    	}
     	
     	
-    	return false;
     	
+    	
+    	return 0;
     	
     	
     }
