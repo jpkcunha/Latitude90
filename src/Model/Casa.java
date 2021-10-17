@@ -17,6 +17,14 @@ public class Casa{
     	this.cor = Cor.VERMELHO1;
     }
 
+    public Casa(int x, int y) {
+    	this.isSpecial = -1;
+    	this.isFull = false;
+    	this.peoes = new int[] {-1, -1};
+    	this.cor = Cor.VERMELHO1;
+    	this.posX = x;
+    	this.posY = y;    	
+    }
     
     public void setPosX(int x) {
     	this.posX = x;

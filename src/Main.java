@@ -1,10 +1,14 @@
+import Model.*;
 
 public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		System.out.printf("%d\n", (-10)%12);
+		Partida p = new Partida();
+		
+		p.criaPartida();
+		
 	}
 
 }

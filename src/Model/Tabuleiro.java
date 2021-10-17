@@ -16,6 +16,13 @@ public class Tabuleiro{
 
     	
     	board = new Casa[12][12];
+    	
+    	for (int i = 0; i < 12; i ++) {
+    		for (int j = 0; j < 12; j ++) {
+    			board[i][j] = new Casa (i, j);
+    		}
+    	}
+    	
     	board[1][3].setSpecial(0);
     	board[3][4].setSpecial(1);
     	board[4][5].setSpecial(0);	
@@ -28,13 +35,6 @@ public class Tabuleiro{
     	board[7][6].setSpecial(2);
     	board[8][7].setSpecial(1);
     	board[10][8].setSpecial(1);
-    	
-    	for (int i = 0; i < 12; i ++) {
-    		for (int j = 0; j < 12; j ++) {
-    			board[i][j].setPosX(i);
-    			board[i][j].setPosY(j);
-    		}
-    	}
     
     }
 

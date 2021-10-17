@@ -4,6 +4,12 @@ public class Jogador {
 
     private int ordem;
     private Cor c;
+    
+    public Jogador(Model.Cor c, int ordem) {
+    	this.ordem = ordem;
+    	this.c = c;
+    	
+    }
 
     public Model.Cor getCor() {
         return c;

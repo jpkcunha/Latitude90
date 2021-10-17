@@ -12,71 +12,150 @@ public class Partida {
     *
     * */
     private  int numJogadores;
-    private String dupla;
+    private boolean isDupla;
     private List<Jogador> ordem;
     private Tabuleiro t;
 
-    Partida(){
+    public Partida(){
 
         Scanner s = new Scanner(System.in);
-        List<String> jaFoi = new ArrayList<>();
+        List<Model.Cor> jaFoi = new ArrayList<>();
 
-        System.out.println("Vocês jogarão em dupla? [S/N]");
-        this.dupla = s.next();
-
-        if(this.dupla == "S") {
+        System.out.println("Vocês jogarão em dupla? [SIM/NAO]");
+        
+        
+        String resp = s.next();
+        
+        
+        //System.out.println(resp);
+        if (resp.equals("SIM")) {
+        	this.isDupla = true;
             this.numJogadores = 4;
         }
 
-        else{
+        else {
+        	this.isDupla = false;
             System.out.println("Numero de jogadores: ");
             this.numJogadores = s.nextInt();
         }
 
         //algoritmo para escolher a cor
         while (jaFoi.size() != this.numJogadores){
-            Jogador p = new Jogador();
-            String corEscolhida;
+        	System.out.println(numJogadores);
+        	
+            int x;
+            Model.Cor corEscolhida;
 
-            System.out.println("Selecione uma cor: ");
-            corEscolhida = s.next();
-
-            if(!jaFoi.contains(corEscolhida)) {
-
-                jaFoi.add(corEscolhida);
-                //p.setCor(corEscolhida);
-                ordem.add(p);
-
-                System.out.println("Cor adicionada com sucesso!");
+            System.out.println("Selecione uma cor: AMARELO [0], VERDE [1], AZUL [2], PRETO [3]");
+            x = s.nextInt();
+            
+            
+            if (x >= 0 && x <= 4) {
+            	corEscolhida = Model.Cor.values()[x];
+            	//System.out.printf("Cor: %s\n", corEscolhida);
+            	
+            	if(!jaFoi.contains(corEscolhida)) {
+            		
+            		jaFoi.add(corEscolhida);
+            		
+            		System.out.printf("Cor adicionada com sucesso! JaFoi tem %d elementos\n", jaFoi.size());
+            	}
+            	
             }
+
+            
         }
 
+        //s.close();
+
+        ordem = new ArrayList<>();
+        escolheOrdem(jaFoi);
+        
         //tabuleuiro preenchido
 
         t = new Tabuleiro();
 
     }
 
-    private void escolheOrdem(){
-        System.out.println("Vamos escolher a ordem as suas ordens!!");
+    private void escolheOrdem(List<Model.Cor> l){
+    	
 
-        /*
-        for (int counter = 0; counter < aux.size(); counter++){
+        Scanner s = new Scanner(System.in);
+        System.out.println("Vamos ver quem começa!!");
 
-            Dado d = new Dado();
-
-            int valorRetirado = d.getNumAleatorio(6,1);
-            System.out.printf("%s retirou no dado o valor: %d%n", aux.get(counter).getCor(), valorRetirado);
-
-
-        }*/
-
-        Collections.shuffle(ordem);
-
-        for(int i = 0; i < ordem.size(); i++){
-            System.out.printf("#%d: %s%n", i+1, ordem.get(i).getCor());
-            //ordem.
+        int n = 0;
+        Model.Cor maior = Model.Cor.VERMELHO1;
+        Dado d = new Dado();
+        
+        for (int i = 0; i < numJogadores; i++) {
+            int atual = d.getNumAleatorio(6, 1);
+            System.out.printf("Jogador %s: você jogou o dado e saiu %d\n", l.get(i).toString(), atual);
+            
+            if (atual > n) {
+            	n = atual;
+            	maior = l.get(i);
+            	}
         }
+        s.close();
+        
+        
+        int cont = 0;
+        Jogador p = new Jogador(maior, cont++);
+        ordem.add(p);
+        
+        if (maior == Model.Cor.PRETO) {
+        	if (l.contains(Model.Cor.AZUL)) {
+        		ordem.add(new Jogador(Model.Cor.AZUL, cont++));
+        	}
+        	if (l.contains(Model.Cor.AMARELO)) {
+        		ordem.add(new Jogador(Model.Cor.AMARELO, cont++));
+        	}
+        	if (l.contains(Model.Cor.VERDE)) {
+        		ordem.add(new Jogador(Model.Cor.VERDE, cont++));
+        	}
+        }
+        
+        else if (maior == Model.Cor.AZUL) {
+        	if (l.contains(Model.Cor.AMARELO)) {
+        		ordem.add(new Jogador(Model.Cor.AMARELO, cont++));
+        	}
+        	if (l.contains(Model.Cor.VERDE)) {
+        		ordem.add(new Jogador(Model.Cor.VERDE, cont++));
+        	}
+        	if (l.contains(Model.Cor.PRETO)) {
+        		ordem.add(new Jogador(Model.Cor.PRETO, cont++));
+        	}
+        }
+        
+        else if (maior == Model.Cor.AMARELO) {
+        	if (l.contains(Model.Cor.VERDE)) {
+        		ordem.add(new Jogador(Model.Cor.VERDE, cont++));
+        	}
+        	if (l.contains(Model.Cor.PRETO)) {
+        		ordem.add(new Jogador(Model.Cor.PRETO, cont++));
+        	}
+        	if (l.contains(Model.Cor.AZUL)) {
+        		ordem.add(new Jogador(Model.Cor.AZUL, cont++));
+        	}
+        }
+        
+        
+        else if (maior == Model.Cor.VERDE) {
+        	if (l.contains(Model.Cor.PRETO)) {
+        		ordem.add(new Jogador(Model.Cor.PRETO, cont++));
+        	}
+        	if (l.contains(Model.Cor.AZUL)) {
+        		ordem.add(new Jogador(Model.Cor.AZUL, cont++));
+        	}
+        	if (l.contains(Model.Cor.AMARELO)) {
+        		ordem.add(new Jogador(Model.Cor.AMARELO, cont++));
+        	}
+        }
+        
+
+        System.out.printf("O jogador a começar é o %s\n", maior.toString());
+        
+
     }
 
     //y -> latitude -> raio
@@ -88,63 +167,87 @@ public class Partida {
         Dado dCor = new Dado();
 
         int valorD1,valorD2;
-        int latitudeIni, longitudeIni, latitudeFim, LongitudeFim;
+        int latitudeIni, longitudeIni, latitudeFim, longitudeFim;
 
-        while(true){
-
+        int cont = 5;
+        while(cont-- > 0){
+        	System.out.printf("==> Rodadas para acabar: %d\n", cont);
             //rodada
             for(int i = 0; i < this.ordem.size(); i++){
 
 
-                System.out.printf("%s, sua vez de jogar!", ordem.get(i).getCor());
+                System.out.printf("%s, sua vez de jogar!\n", ordem.get(i).getCor());
 
                 valorD1 = d1.getNumAleatorio(6,1);
                 valorD2 = d1.getNumAleatorio(6,1);
                 System.out.printf("Você tirou %d e %d!%n", valorD1, valorD2);
+                
+                latitudeIni = d1.getNumAleatorio(5, 0);
+                longitudeIni = d1.getNumAleatorio(5, 0);
+                latitudeFim = d1.getNumAleatorio(5, 0);
+                longitudeFim = d1.getNumAleatorio(5, 0);
 
+                System.out.printf("Casa inicial: longitude %d e latitude %d\n", longitudeIni, latitudeIni);
+                System.out.printf("Casa final: longitude %d e latitude %d\n", longitudeFim, latitudeFim);
+
+                Casa inicio = t.getBoard()[longitudeIni][latitudeIni];
+                Casa fim = t.getBoard()[longitudeFim][latitudeFim];
+                
+                int n = t.verificaJogada(ordem.get(i), inicio, fim, valorD1, valorD2);
+
+                if (n == valorD1)
+                    System.out.println("Movimentação liberada com o dado 1!");
+                else if (n == valorD2)
+                    System.out.println("Movimentação liberada com o dado 2!");
+                else if (n == valorD1 + valorD2)
+                    System.out.println("Movimentação liberada com os dados 1 e 2!");
+                else
+                    System.out.println("Parece que você não pode se mover para lá!");
+              
+                /* Movimentação do usuario com base na latitude e longitude
+                 
                 System.out.println("Escolha com qual peao você quer andar.");
                 System.out.printf("Latitude: ");
+                
                 latitudeIni = s.nextInt();
                 System.out.printf("Longitude: ");
+                
                 longitudeIni = s.nextInt();
 
                 System.out.println("Agora, escolha para onde quer andar...");
                 System.out.printf("Latitude: ");
                 latitudeFim = s.nextInt();
                 System.out.printf("Longitude: ");
-                LongitudeFim = s.nextInt();
+                longitudeFim = s.nextInt();
 
-                System.out.printf("Deseja andar:%n[1]%d%n[2]%d%n[3]%d", valorD1, valorD2, valorD1 + valorD2);
+                
+                Casa inicio, fim;
+                
+                if (latitudeIni == -1) inicio = t.getPoloSul();
+                else if (latitudeIni == 12) inicio = t.getPoloNorte();
+                else inicio = t.getBoard()[longitudeIni][latitudeIni];
+                
+                if (latitudeFim == -1) fim = t.getPoloSul();
+                else if (latitudeFim == 12) fim = t.getPoloNorte();
+                else fim = t.getBoard()[longitudeFim][latitudeFim];
+                
+                int n = t.verificaJogada(ordem.get(i), inicio, fim, valorD1, valorD2);
 
-                if(s.next() == "1")
-                    if(t.verificaMovimento(longitudeIni, latitudeIni, LongitudeFim, latitudeFim, valorD1))
-                        System.out.println("Movimentação liberada!");
-                    else
-                        System.out.println("Parace que você não pode se mover para lá!");
-
-                if(s.next() == "2")
-                    if (t.verificaMovimento(longitudeIni, latitudeIni, LongitudeFim, latitudeFim, valorD2))
-                            System.out.println("Movimentação liberada!");
-                    else
-                        System.out.println("Parace que você não pode se mover para lá!");
-
-                if(s.next() == "3")
-                    if(t.verificaMovimento(longitudeIni, latitudeIni, LongitudeFim, latitudeFim, valorD1 + valorD2))
-                        System.out.println("Movimentação liberada!");
-                    else
-                        System.out.println("Parace que você não pode se mover para lá!");
-
-
+                if (n == valorD1)
+                    System.out.println("Movimentação liberada com o dado 1!");
+                else if (n == valorD2)
+                    System.out.println("Movimentação liberada com o dado 2!");
+                else if (n == valorD1)
+                    System.out.println("Movimentação liberada com os dados 1 e 2!");
+                else
+                    System.out.println("Parece que você não pode se mover para lá!");
             }
 
-            if (t.getPoloSul().getIsFull() || t.getPoloNorte().getIsFull()){
+			*/
 
-
-                return 1;
             }
-
-
         }
+        return 0;
     }
 
 
