@@ -203,7 +203,7 @@ public class Partida {
                     System.out.println("Movimentação liberada com os dados 1 e 2!");
                 else
                     System.out.println("Parece que você não pode se mover para lá!");
-              
+                System.out.println(n);
                 /* Movimentação do usuario com base na latitude e longitude
                  
                 System.out.println("Escolha com qual peao você quer andar.");
