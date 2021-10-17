@@ -8,7 +8,7 @@ public class Casa{
     private int posY;
     private int[][] posicoes;
     private int[] peoes;
-    private Cor cor;
+    private Model.Cor cor;
 
     public Casa() {
     	this.isSpecial = -1;
@@ -98,27 +98,41 @@ public class Casa{
     //Retorna o índice do peao do jogador que estiver na casa ou -1 se inexistente
     public int verificaPeao(Jogador j) {
     	if (j.getCor() == cor) {
-    		if (peoes[1] != -1) return peoes[1]; //2 peões na casa
-    		else return peoes[0];
+
+			System.out.println("Cor igual!");
+    		if (peoes[1] != -1) {
+    			System.out.println(peoes[1]);
+    			return peoes[1]; //2 peões na casa
+    		}
+    		else  {
+    			System.out.println(peoes[0]);
+    			return peoes[0];
+    		}
     	}
     	return -1;
     }
 
+    
     public void adicionaPeao(Peao p) {
     	if (p.getCor() == cor) {
     		peoes[1] = p.getId();
     		this.isFull = true;
     	}
-    	else peoes[0] = p.getId();
+    	else {
+    		cor = p.getCor();
+    		peoes[0] = p.getId();
+    	}
     }
     
     public void retiraPeao() {
     	for (int i = peoes.length - 1; i < 0; i --) {
     		if (peoes[i] != -1) {
     			peoes[i] = -1;
+    			if (i == 0) cor = Cor.VERMELHO1;
     			return;
     		}
     	}
+    	return;
     }
     
     public int getIsSpecial() {return isSpecial;}
