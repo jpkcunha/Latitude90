@@ -16,18 +16,18 @@ public class Tabuleiro{
 
     	
     	board = new Casa[12][12];
-    	board[3][1].setSpecial(0);
-    	board[3][7].setSpecial(1);
-    	board[4][5].setSpecial(1);	
-    	board[4][11].setSpecial(1);
-    	board[5][4].setSpecial(0);
-    	board[5][10].setSpecial(0);
-    	board[8][1].setSpecial(1);
+    	board[1][3].setSpecial(0);
+    	board[3][4].setSpecial(1);
+    	board[4][5].setSpecial(0);	
+    	board[7][3].setSpecial(1);
+    	board[9][4].setSpecial(1);
+    	board[10][5].setSpecial(0);
+    	board[1][6].setSpecial(2);
+    	board[2][7].setSpecial(1);
+    	board[4][8].setSpecial(1);
+    	board[7][6].setSpecial(2);
     	board[8][7].setSpecial(1);
-    	board[7][5].setSpecial(1);
-    	board[7][11].setSpecial(1);
-    	board[6][4].setSpecial(2);
-    	board[6][10].setSpecial(2);
+    	board[10][8].setSpecial(1);
     	
     	for (int i = 0; i < 12; i ++) {
     		for (int j = 0; j < 12; j ++) {
@@ -86,7 +86,7 @@ public class Tabuleiro{
     
     //x -> longitude
     //y -> latitude
-    public boolean verificaMovimento(int xIni, int yIni, int xFin, int yFin, int n) {
+    private boolean verificaMovimento(int xIni, int yIni, int xFin, int yFin, int n) {
     	
     	//PoloSul
     	if (yIni == -1) return verificaBaixo(xFin, yIni, yFin, n);
@@ -161,10 +161,6 @@ public class Tabuleiro{
            (verificaMovimento(xIni, yIni, xIni, yFin, maior) && verificaMovimento(xFin, yIni, xFin, yFin, menor))) {
     		return maior + menor;
     	}
-    	
-    	
-    	
-    	
     	return 0;
     	
     	
