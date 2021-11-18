@@ -4,9 +4,9 @@ import java.util.Random;
 
 public class Dado {
 	
-	public int getNumAleatorio() {
-		return (int) ((Math.random() * (6 - 1)) + 1);
-	}
+	   public int getNumAleatorio(int a, int b) {
+	        return (int) ((Math.random() * (a - b)) + b);
+	    }
 	
 	public Cor getCorAleatoria() {
 		Random random = new Random();
