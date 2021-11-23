@@ -36,7 +36,7 @@ public class Casa{
     }
     
     
-    //Estabelece as posições dos pinos nos polos na interface gráfica
+    //Estabelece as posições dos pinos nos polos na interface gráfica TIRAR PRO VIEW
     public void setPolo(int polo) {
     	int[] centro;
     	this.posicoes = new int [][] {{-18, 16}, {0, 24}, {18, 16}, {-18, -16}, {0, -24}, {18, -16}};
