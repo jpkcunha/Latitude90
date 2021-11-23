@@ -2,11 +2,10 @@ package View;
 
 import java.awt.*;
 import javax.swing.*;
-//import java.awt.event.ActionEvent;
-//import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 
-public class FrameTabuleiro extends JFrame{
+public class FrameTabuleiro extends JFrame implements MouseListener {
 	private final int LARG_DEFAULT = 1200;
 	private final int ALT_DEFAULT = 700;
 	private final Image background = Imagem.get("background"); 
@@ -23,6 +22,7 @@ public class FrameTabuleiro extends JFrame{
 		setTitle("Latitude90");
 		setLayout(null);
 		setResizable(false);
+		addMouseListener(this);
 		
 	}
 
@@ -34,6 +34,26 @@ public class FrameTabuleiro extends JFrame{
         // desenha o fundo
         g2d.drawImage(background, 0, 0, null);
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    	Point p = e.getPoint();
+        int x = (int) p.getX();
+        int y = (int) p.getY();
+        System.out.printf("x = %d, y = %d\n", x, y);
+    }
+    
+    @Override
+    public void mouseExited(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mousePressed(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
     
     public void abrir() {
     	this.setVisible(true);
