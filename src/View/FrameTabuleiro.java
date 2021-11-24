@@ -4,7 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.lang.Math.*;
-import java.util.ArrayList;
+import java.util.ArrayList;	
 import java.util.HashMap;
 
 //TEM QUE TIRAR!!!!
@@ -28,7 +28,8 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 
 
 	public String atual = "Dado1";
-	private final Image background = Imagem.get("background"); 
+	private final Image background = Imagem.get("background");
+	private final Image carta = Imagem.get("Carta"); 
 	private final Image d1 = Imagem.get("Dado1");
 	private Image dadoAtual1 = Imagem.get("Dado1");
 	private Image dadoAtual2 = Imagem.get("Dado1");
@@ -107,8 +108,9 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
         Graphics2D g2d = (Graphics2D) g;
         Font f = new Font("Arial", Font.BOLD, 28);
 
-        // desenha o fundo
+        // desenha o tabuleiro com as cartas
         g2d.drawImage(background, 0, 0, null);
+        g2d.drawImage(carta, 317, 567, 120, 100, null);
         
         //desenha os dados
         g2d.drawImage(dadoAtual1, 770, 30, null);
