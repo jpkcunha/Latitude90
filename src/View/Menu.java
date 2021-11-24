@@ -9,15 +9,18 @@ import java.awt.event.ActionListener;
 public class Menu extends JFrame implements ActionListener{
 	private final int LARG_DEFAULT=300;
 	private final int ALT_DEFAULT=400;
-
+	public boolean dupla = false;
+	public int qtoJogadores = 0;
+	
     protected JButton botaoNovaPartida;
     protected JButton botaoCarregarPartida;
     protected JButton botaoComecarPartida;
     protected JComboBox<String> opcoesJogadores;
     protected String[] opcoes;
     
+    
     public boolean ativado;
-	
+
 	public Menu() {
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension screenSize=tk.getScreenSize();
@@ -72,7 +75,7 @@ public class Menu extends JFrame implements ActionListener{
         opcoesJogadores.repaint();
     }
     
-
+    
     public void actionPerformed(ActionEvent e) {
         Object obj = e.getSource();
 
@@ -87,9 +90,9 @@ public class Menu extends JFrame implements ActionListener{
             //this.botaoNovaPartida.setVisible(false);
             System.out.println("Botão carregar apertado");
 
-        } else if (obj.equals(botaoComecarPartida)) {  // apertou o botao de carregar partida
+        } else if (obj.equals(botaoComecarPartida)) {  // apertou o botao de comecar partida
             System.out.println("Começar jogo");
-            FrameTabuleiro t = new FrameTabuleiro();
+            FrameTabuleiro t = new FrameTabuleiro(this.qtoJogadores, this.dupla);
             t.abrir();
             this.setVisible(false);
             this.dispose();
@@ -99,6 +102,20 @@ public class Menu extends JFrame implements ActionListener{
         } else {  // mudou a quantidade de jogadores
             JComboBox<String> cb = (JComboBox<String>) obj;
             String quantidade = (String)cb.getSelectedItem();
+            
+            if (quantidade.equals("2 duplas")) {
+            	this.dupla = true;
+            }
+            
+            else if (quantidade.equals("2 jogadores")) {
+            	this.qtoJogadores = 2;
+            	
+            }
+            
+            else if (quantidade.equals("4 jogadores")) {
+            	this.qtoJogadores = 4;
+            }
+            
             System.out.printf("==> %s\n", quantidade);
             //this.quantidadeJogadores = Integer.parseInt(String.valueOf(quantidade.charAt(0)));
         }

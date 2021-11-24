@@ -6,9 +6,9 @@ public class Casa{
     private boolean isFull;
     private int posX;
     private int posY;
-    private int[][] posicoes;
     private int[] peoes;
     private Model.Cor cor;
+    private int nElementos;
 
     public Casa() {
     	this.isSpecial = -1;
@@ -39,7 +39,6 @@ public class Casa{
     //Estabelece as posições dos pinos nos polos na interface gráfica TIRAR PRO VIEW
     public void setPolo(int polo) {
     	int[] centro;
-    	this.posicoes = new int [][] {{-18, 16}, {0, 24}, {18, 16}, {-18, -16}, {0, -24}, {18, -16}};
     	
     	if (polo == 0) { //Polo Sul
     		posX = -1;
@@ -52,11 +51,7 @@ public class Casa{
     		centro = new int[] {545, 332};
     	}
     	else return;
-    	
-    	for (int i = 0; i < 6; i++) {
-    		posicoes[i][0] += centro[0];
-    		posicoes[i][1] += centro[1];
-    	}
+    
     }
     
     //Método ainda não finalizado para a interface gráfica
