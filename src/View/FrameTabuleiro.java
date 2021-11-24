@@ -8,11 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 //TEM QUE TIRAR!!!!
-import Model.*;
 import java.util.Random;
 
 
-public class FrameTabuleiro extends JFrame implements MouseListener, ActionListener {
+public class FrameTabuleiro extends JFrame implements MouseListener{
 	private final int LARG_DEFAULT = 1200;
 	private final int ALT_DEFAULT = 700;
 	private final String VERDE = "#257817";
@@ -75,7 +74,14 @@ public class FrameTabuleiro extends JFrame implements MouseListener, ActionListe
 		opcaoNum2.setBounds(910, 120, 100, 30);
 		this.add(opcaoNum2);
 		opcaoNum2.setVisible(true);
-		opcaoNum2.addActionListener(null);
+		
+		// Fecha a combobox 
+		opcaoNum2.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) { 
+		    	desenha();
+		    	System.out.println("Feito");
+		    	}
+		});
 		
 		
 		//combobox dado cor
@@ -91,7 +97,9 @@ public class FrameTabuleiro extends JFrame implements MouseListener, ActionListe
 		
 	}
 
-
+	public void desenha() {
+		this.repaint();
+	}
 
     @Override
     public void paint(Graphics g) {
@@ -163,16 +171,23 @@ public class FrameTabuleiro extends JFrame implements MouseListener, ActionListe
         if ((x >= 900 && x <= 1030) && (y >= 210 && y <= 270)) {
         	String dado1 = (String)opcaoNum1.getSelectedItem();
         	String dado2 = (String)opcaoNum2.getSelectedItem();
-        	
-        	if (dado1.equals("Aleatório")) {
-        		val1 = (int)((Math.random() * (6 - 1)) + 1);
+
+        	if (dado1.equals("Aleatório") && dado2.equals("Aleatório")) {
+        		val1 = (int)(Math.random()*6) + 1;
+        		val2 = (int)(Math.random()*6) + 1;
+        		System.out.printf("Joga dado 1 Aleatório ==> %d\n", val1);
+        		System.out.printf("Joga dado 2 Aleatório ==> %d\n", val2);
+        	}
+
+        	else if (dado1.equals("Aleatório")) {
+        		val1 = (int)(Math.random()*6) + 1;
         		val2 = Integer.parseInt(dado2);
         		System.out.printf("Joga dado 1 Aleatório ==> %d\n", val1);
         	}
         	
-        	if (dado2.equals("Aleatório")){
+        	else if (dado2.equals("Aleatório")){
         		val1 = Integer.parseInt(dado1);
-        		val2 = (int)((Math.random() * (6 - 1)) + 1);
+        		val2 = (int)(Math.random()*6) + 1;
         		System.out.printf("Joga dado 2 Aleatório ==> %d\n", val2);
         	}
         	
@@ -343,11 +358,6 @@ public class FrameTabuleiro extends JFrame implements MouseListener, ActionListe
     	System.out.printf("Latitude %d, longitude %d, posição %d: x=%d y=%d\n", latitude, longitude, pos, x, y);
     	
     }
-    
-    public void actionPerformed(ActionEvent e) {
-        Object obj = e.getSource();
-
-        if (obj.equals(opcaoNum2)) this.repaint();
-    }
+ 
 }
 
