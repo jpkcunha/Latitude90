@@ -17,32 +17,53 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 	private final String VERDE = "#257817";
 	private final String AMARELO = "#b58500";
 	private final String CINZA = "#3b3b3b";
-
+	private final int RAIO = 30;
+	private final int DIAMETRO = 15; 
 	public int qtoJogadores = 0;
 	public boolean dupla = false;
 	
 	protected JComboBox<String> opcaoNum1;
 	protected JComboBox<String> opcaoNum2;
 	protected JComboBox<String> opcaoCor;
-	HashMap<String, Integer> pontos = new HashMap<>();
+	public HashMap<String, Integer> pontos = new HashMap<>();
 
 
-	public String atual = "Dado1";
 	private final Image background = Imagem.get("background");
 	private final Image carta = Imagem.get("Carta"); 
 	private final Image d1 = Imagem.get("Dado1");
 	private Image dadoAtual1 = Imagem.get("Dado1");
 	private Image dadoAtual2 = Imagem.get("Dado1");
+	private Image dadoCorAtual = Imagem.get("DadoAmarelo");
+	
+	private Image peaoPreto = Imagem.get("peaoPreto");
+	private Image peaoAzul = Imagem.get("peaoAzul");
+	private Image peaoVerde = Imagem.get("peaoVerde");
+	private Image peaoAmarelo = Imagem.get("peaoAmarelo");
+	public String vezAtual  = "Verde";
+	
+	private String []numOpcoes = new String[]{"1", "2", "3", "4", "5", "6", "Aleatório"};
+	private String []corOpcoes = new String[] {"Amarelo", "Verde", "Preto", "Azul", "Aleatório"};
+	
+	
+	public int [][]posAzul = new int[6][2]; 
+	public int [][]posVerde = new int[6][2]; 
+	public int [][]posPreto = new int[6][2]; 
+	public int [][]posAmarelo = new int[6][2]; 
+	
+	public int [][]pecasEspeciais = new int[12][2];
+	
+	public int x = 195;
+	public int y = 325;
 	
 
 	public FrameTabuleiro(int qtoJogadores, boolean dupla) {
 		
-		String []numOpcoes = new String[]{"1", "2", "3", "4", "5", "6", "Aleatório"};
-		String []corOpcoes = new String[] {"Amarelo", "Verde", "Preto", "Azul", "Aleatório"};
 		
 		this.dupla = dupla;
 		if (!dupla) {
 			this.qtoJogadores = qtoJogadores;
+		}else {
+			this.qtoJogadores = 4;
 		}
 		
 		//preenchendo o hashmap de pontos
@@ -50,6 +71,12 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 		pontos.put("Verde", 0);
 		pontos.put("Azul", 0);
 		pontos.put("Preto", 0);
+
+		//inicializandos os vetores de posições com -1
+		inicializaVetores();
+		
+		//inicializando vetor das posicoes d fichas com -1
+		inicializaVetorFichas();
 		
 		
 		Toolkit tk=Toolkit.getDefaultToolkit();
@@ -80,9 +107,18 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 		opcaoNum2.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) { 
 		    	desenha();
-		    	System.out.println("Feito");
 		    	}
 		});
+		
+		//teste peao
+		
+		atualizaVetorPeao(0, "Amarelo", 200, 334);
+		atualizaVetorPeao(1, "Amarelo", 200, 334);
+		atualizaVetorPeao(3, "Amarelo", 200, 334);
+		
+		//teste fichas
+		
+		atualizaVetorFichas(0, 113, 428);
 		
 		
 		//combobox dado cor
@@ -115,7 +151,7 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
         //desenha os dados
         g2d.drawImage(dadoAtual1, 770, 30, null);
         g2d.drawImage(dadoAtual2, 920, 30, null);
-        g2d.drawImage(d1, 1070, 30, null);
+        g2d.drawImage(dadoCorAtual, 1070, 30, null);
         
         //desenha botoes
         g2d.setColor(Color.decode(CINZA));
@@ -147,6 +183,7 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
         g2d.setColor(Color.decode(AMARELO));
         g2d.drawString("Pontos: ", 1000, 630);
         
+        
         //desenhando os pontos
         
         g2d.setColor(Color.BLACK);
@@ -161,18 +198,109 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
         g2d.setColor(Color.decode(AMARELO));
         g2d.drawString(pontos.get("Amarelo").toString(), 1130, 630);
         
+        
+        //desenhado a vez do jogador
+        
+        if (vezAtual.equals("Preto")) {
+        	g2d.setStroke(new BasicStroke(5));
+        	g2d.setColor(Color.BLACK);
+        	g2d.drawLine(771, 486, 913, 486);
+        	
+        }
+        else if (vezAtual.equals("Azul")) {
+        	g2d.setColor(Color.BLUE);
+        	g2d.setStroke(new BasicStroke(5));
+        	g2d.drawLine(1003, 484, 1143, 484);
+        }
+        else if (vezAtual.equals("Amarelo")) {
+        	g2d.setColor(Color.decode(AMARELO));
+        	g2d.setStroke(new BasicStroke(5));
+        	g2d.drawLine(1003, 634, 1144, 634);
+        }
+        else if (vezAtual.equals("Verde")) {
+        	g2d.setColor(Color.decode(VERDE));
+        	g2d.setStroke(new BasicStroke(5));
+        	g2d.drawLine(774, 634, 912, 634);
+        }
+        else {
+        	System.out.println("Cor nao reconhecida.");
+        }
+        
+        
+        //desenhando fichas especiais
+       
+       
+        
+        g2d.setColor(Color.RED);
+        
+        if(!vetorVazio(pecasEspeciais));
+        for (int i = 0; i < pecasEspeciais.length; i++) {
+        	if(pecasEspeciais[i][0] != -1 && pecasEspeciais[i][1] != -1) {
+        		g2d.fillOval(pecasEspeciais[i][0] - DIAMETRO/2, pecasEspeciais[i][1] - DIAMETRO/2, DIAMETRO, DIAMETRO);
+        	}
+        }
+        
+        /*
+        g2d.fillOval(50, 222, 15, 10);
+        g2d.fillOval(155, 179, 10, 10);
+        g2d.fillOval(113 - 5, 428 - 5, 10, 10);
+        g2d.fillOval(242 - 5, 488 - 5, 10, 10);
+        g2d.fillOval(351 - 5, 440 - 5, 10, 10);
+        g2d.fillOval(277 - 5, 231 - 5, 10, 10);
+        g2d.fillOval(441 - 5, 183 - 5, 10, 10);
+        g2d.fillOval(504 - 5, 182 - 5, 10, 10);
+        g2d.fillOval(455 - 5, 430 - 5, 10, 10);
+        g2d.fillOval(585 - 5, 487 - 5, 10, 10);
+        g2d.fillOval(647 - 5, 485 - 5, 10, 10);
+        g2d.fillOval(634 - 5, 245 - 5, 10, 10);
+        */
+        
+
+       //tentando desenhar uma peça
+        if (!vetorVazio(posPreto)) {
+        	for (int i = 0; i < posPreto.length; i++) {
+        		if (posPreto[i][0] != -1 && posPreto[i][0] != -1) {
+        			g2d.drawImage(peaoPreto, posPreto[i][0], posPreto[i][1] + (i * 3), null);
+        		}
+        	}
+        }
+        if (!vetorVazio(posAzul)) {
+        	for (int i = 0; i < posAzul.length; i++) {
+        		if (posAzul[i][0] != -1 && posAzul[i][0] != -1) {
+        			g2d.drawImage(peaoAzul, posAzul[i][0], posAzul[i][1] + (i * 3), null);
+        		}
+        	}
+        }
+        if (!vetorVazio(posVerde)) {
+        	for (int i = 0; i < posVerde.length; i++) {
+        		if (posVerde[i][0] != -1 && posVerde[i][0] != -1) {
+        			g2d.drawImage(peaoVerde, posVerde[i][0], posVerde[i][1] + (i * 3), null);
+        		}
+        	}
+        }
+        if (!vetorVazio(posAmarelo)) {
+        	for (int i = 0; i < posAmarelo.length; i++) {
+        		if (posAmarelo[i][0] != -1 && posAmarelo[i][0] != -1) {
+        			g2d.drawImage(peaoAmarelo, posAmarelo[i][0], posAmarelo[i][1] + (i * 3), null);
+        		}
+        	}
+        }
+        
     }
 
-    @Override
+	@Override
     public void mouseClicked(MouseEvent e) {
     	Point p = e.getPoint();
-    	int x, y, val1, val2;
+    	int x, y, val1, val2, val3;
         x = (int) p.getX();
         y = (int) p.getY();
+        
+        System.out.printf("x= %d y=%d\n", x, y);
         
         if ((x >= 900 && x <= 1030) && (y >= 210 && y <= 270)) {
         	String dado1 = (String)opcaoNum1.getSelectedItem();
         	String dado2 = (String)opcaoNum2.getSelectedItem();
+        	String dado3 = (String)opcaoCor.getSelectedItem();
 
         	if (dado1.equals("Aleatório") && dado2.equals("Aleatório")) {
         		val1 = (int)(Math.random()*6) + 1;
@@ -199,9 +327,17 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
         		//dadoAtual1 = Imagem.get("Dado", Integer.parseInt(dado1));
         		//dadoAtual2 = Imagem.get("Dado", Integer.parseInt(dado2));
         	}
+        	
+        	if (dado3.equals("Aleatório")) {
+        		val3 = (int)(Math.random()*4);
+        		dado3 = this.corOpcoes[val3];
+        		
+        		
+        	}
 
     		dadoAtual1 = Imagem.get("Dado", val1);
     		dadoAtual2 = Imagem.get("Dado", val2);
+    		dadoCorAtual = Imagem.get("Dado" + dado3);
     		this.repaint();
         	
         	
@@ -212,6 +348,8 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
         	
         else if ((x >= 900 && x <= 1030) && (y >= 300 && y <= 430)) {
         	System.out.println("Clicou no botão Salvar");
+        	atualizaVetorPeao(0, "Amarelo", 380, 372);
+        	this.repaint();
         }
     }
     
@@ -360,6 +498,67 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
     	System.out.printf("Latitude %d, longitude %d, posição %d: x=%d y=%d\n", latitude, longitude, pos, x, y);
     	
     }
+    
+    private void inicializaVetores() {
+    	for (int i =0; i < 6; i++) {
+    		this.posAmarelo[i][0] = -1;
+    		this.posAmarelo[i][1] = -1;
+    		
+    		this.posVerde[i][0] = -1;
+    		this.posVerde[i][1] = -1;
+    		
+    		this.posPreto[i][0] = -1;
+    		this.posPreto[i][1] = -1;
+    		
+    		this.posAzul[i][0] = -1;
+    		this.posAzul[i][1] = -1;
+    	}
+    }
+    
+    public void inicializaVetorFichas() {
+    	for (int i = 0; i < pecasEspeciais.length; i++) {
+    		this.pecasEspeciais[i][0] = -1;
+    		this.pecasEspeciais[i][1] = -1;
+    	}
+    }
+    
+    private boolean vetorVazio(int [][]pos) {
+    	for (int i = 0; i < pos.length; i++) {
+    		if (pos[i][0] == -1 || pos[i][1] == -1) {
+    			return false;
+    		}
+    	}
+    	
+    	return true;
+    }
+    
+    public void atualizaVetorPeao(int idPeca, String idCor, int x, int y) {
+    	
+    	if (idCor.equals("Azul")) {
+    		this.posAzul[idPeca][0] = x;
+    		this.posAzul[idPeca][1] = y;
+    	}
+    	
+    	else if(idCor.equals("Verde")) {
+    		this.posVerde[idPeca][0] = x;
+    		this.posVerde[idPeca][1] = y;
+    	}
+    	else if(idCor.equals("Preto")) {
+    		this.posPreto[idPeca][0] = x;
+    		this.posPreto[idPeca][1] = y;
+    	}
+    	else if(idCor.equals("Amarelo")) {
+    		this.posAmarelo[idPeca][0] = x;
+    		this.posAmarelo[idPeca][1] = y;
+    	}
+    	else {
+    		System.out.println("Cor nao identidicado.");
+    	}
+    }
+    
+    public void atualizaVetorFichas(int idFicha, int x, int y) {
+    	this.pecasEspeciais[idFicha][0] = x;
+    	this.pecasEspeciais[idFicha][1] = y;
+    }
  
 }
-

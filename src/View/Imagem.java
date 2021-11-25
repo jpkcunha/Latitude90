@@ -43,7 +43,19 @@ public class Imagem {
             hash.put("Dado5", ImageIO.read(new File(s+"Dado5.png")));
             hash.put("Dado6", ImageIO.read(new File(s+"Dado6.png")));
             
+            hash.put("DadoVermelho", ImageIO.read(new File(s+"dadoVermelho.png")));
+            hash.put("DadoVerde", ImageIO.read(new File(s+"dadoVerde.png")));
+            hash.put("DadoAzul", ImageIO.read(new File(s+"dadoAzul.png")));
+            hash.put("DadoAmarelo", ImageIO.read(new File(s+"dadoAmarelo.png")));
+            hash.put("DadoPreto", ImageIO.read(new File(s+"dadoPreto.png")));
+       
+            
+            hash.put("peaoPreto", ImageIO.read(new File(s + "peaoPreto.png")));
+            hash.put("peaoVerde", ImageIO.read(new File(s + "peaoVerde.png")));
+            hash.put("peaoAmarelo", ImageIO.read(new File(s + "peaoAmarelo.png")));
+            hash.put("peaoAzul", ImageIO.read(new File(s + "peaoAzul.png")));
 
+            
             hash.put("background", ImageIO.read(new File(s+"Tabuleiro.jpg")));
         }
         catch (IOException e) {
