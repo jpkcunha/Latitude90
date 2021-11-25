@@ -23,6 +23,7 @@ public class Tabuleiro{
     		}
     	}
     	
+    	//Determina as casas especiais
     	board[1][3].setSpecial(0);
     	board[3][4].setSpecial(1);
     	board[4][5].setSpecial(0);	
@@ -43,9 +44,12 @@ public class Tabuleiro{
     	int i, x = xIni;
 		for (i = 1; i <= n; i++) {
 			x = (12 + xIni + i)%12;
-			if (board[x][y].getIsFull()) break; //Caminho bloqueado    			
+			if (board[x][y].getIsFull()) break; //Caminho bloqueado
 		}
-		if (i == n+1 && x == xFin) return true;
+		if (i == n+1 && x == xFin) {
+			System.out.println("Pode andar pra direita!");
+			return true;
+		}
 		return false;
     }
   
@@ -53,9 +57,12 @@ public class Tabuleiro{
     	int i, x = xIni;
 		for (i = 1; i <= n; i++) {
 			x = (12 + xIni - i)%12;
-			if (board[x][y].getIsFull()) break; //Caminho bloqueado    			
+			if (board[x][y].getIsFull()) break; //Caminho bloqueado
 		}
-		if (i == n+1 && x == xFin) return true;
+		if (i == n+1 && x == xFin) {
+			System.out.println("Pode andar pra esquerda!");
+			return true;
+		}
 		return false;
     }
 
@@ -67,7 +74,10 @@ public class Tabuleiro{
 			if (board[x][y].getIsFull()) break; //Caminho bloqueado
 			if (y == 6 && x != 2 && x != 3 && x != 8 && x != 9) break;
 		}
-		if (i == n+1 && y == yFin) return true;
+		if (i == n+1 && y == yFin) {
+			System.out.println("Pode andar pra baixo!");
+			return true;
+		}
 		return false;
     }
     
@@ -79,7 +89,10 @@ public class Tabuleiro{
 			if (board[x][y].getIsFull()) break; //Caminho bloqueado
 			if (y == 5 && x != 2 && x != 3 && x != 8 && x != 9) break;
 		}
-		if (i == n+1 && y == yFin) return true;
+		if (i == n+1 && y == yFin) {
+			System.out.println("Pode andar pra cima!");
+			return true;
+		}
 		return false;
     }
     
@@ -88,43 +101,56 @@ public class Tabuleiro{
     //y -> latitude
     private boolean verificaMovimento(int xIni, int yIni, int xFin, int yFin, int n) {
     	
+    	System.out.println("Está no polo sul?");
     	//PoloSul
     	if (yIni == -1) return verificaBaixo(xFin, yIni, yFin, n);
 
+    	System.out.println("Está no polo norte?");
     	//PoloNorte
     	if (yIni == 12) return verificaCima(xFin, yIni, yFin, n);
-    	
+
+    	System.out.println("Está na mesma latitude?");
     	//Movimentação dentro da mesma latitude
     	if (yIni == yFin) return verificaDireita(xIni, xFin, yIni, n) || verificaEsquerda(xIni, xFin, yIni, n); 
-    	
+
+    	System.out.println("Passa pelo polo sul?");
     	//Chega no polo sul - movimentação para baixo em qualquer longitude
     	if (verificaCima(xIni, yIni, -1, yIni + 1)) return verificaBaixo(xFin, -1, yFin, n - (yIni + 1));
 
+    	System.out.println("Passa pelo polo norte?");
     	//Chega no polo norte - movimentação para cima em qualquer longitude
     	if (verificaBaixo(xIni, yIni, 12, 12 - yIni)) return verificaCima(xFin, 12, yFin, n - (12 - yIni));
 
+    	System.out.println("Vertical sem chegar nos polos?");
     	//Movimentação vertical sem chegar nos polos
     	if (verificaBaixo(xIni, yIni, yFin, n) || verificaCima(xIni, yIni, yFin, n)) return true;
     	
+    	System.out.println("Movimento inválido");
     	return false;
     	
     }
     
     
-    public int verificaJogada(Jogador j, Casa inicio, Casa fim, int n1, int n2) {
+    public int verificaJogada(Jogador j, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
     	
-    	int pos = inicio.verificaPeao(j);
+    	//Verifica se o peão do jogador está na casa de inicio do movimento
+    	int pos;
+    	if (xIni == -1) pos = this.poloSul.verificaPolo(j,  0);
+    	else if (xIni == -1) pos = this.poloNorte.verificaPolo(j,  1);
+    	else pos = this.board[xIni][yIni].verificaPeao(j);
     	
-    	//Jogador não contem peao dentro da casa inicial
+    	//Jogador não contém peão dentro da casa inicial
     	if (pos == -1) return 0;
     	
+    	/*
     	int xIni, yIni, xFin, yFin, maior, menor;
     	
     	xIni = inicio.getPosX();
     	yIni = inicio.getPosY();
     	xFin = fim.getPosX();
-    	yFin = fim.getPosY();
+    	yFin = fim.getPosY();*/
     	
+    	int maior, menor;
     	if (n1 > n2) {
     		maior = n1;
     		menor = n2;
@@ -163,17 +189,15 @@ public class Tabuleiro{
     	}
     	return 0;
     	
-    	
     }
     
     /* Geters and Seters*/
-    public Casa getPoloSul() {
-        return poloSul;
+    public Casa getPolo(int polo) {
+        if (polo == 0) return poloSul;
+        return poloNorte;
+
     }
 
-    public Casa getPoloNorte() {
-        return poloNorte;
-    }
 
     public Casa[][] getBoard() {
         return board;

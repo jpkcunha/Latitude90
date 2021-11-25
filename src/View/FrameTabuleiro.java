@@ -75,7 +75,7 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 		//inicializandos os vetores de posições com -1
 		inicializaVetores();
 		
-		//inicializando vetor das posicoes d fichas com -1
+		//inicializando vetor das posicoes de fichas com -1
 		inicializaVetorFichas();
 		
 		
