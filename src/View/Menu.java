@@ -75,7 +75,10 @@ public class Menu extends JFrame implements ActionListener{
         opcoesJogadores.repaint();
     }
     
-    
+    public void fecha() {
+        this.setVisible(false);
+        this.dispose();
+    }
     
     
     public void actionPerformed(ActionEvent e) {
@@ -96,9 +99,7 @@ public class Menu extends JFrame implements ActionListener{
             System.out.println("Começar jogo");
             FrameTabuleiro t = new FrameTabuleiro(this.qtoJogadores, this.dupla);
             t.abrir();
-            this.setVisible(false);
-            this.dispose();
-            
+            fecha();           
             
 
         } else {  // mudou a quantidade de jogadores

@@ -123,6 +123,21 @@ public class Casa{
     	}
     	return -1; //Erro
     }
+
+    public int retiraPolo(Model.Cor cor) {
+    	int pos;
+    	if (cores[0] == cor) pos = 0;
+    	else if (cores[1] == cor) pos = 1;
+    	for (int i = ; i < 0; i --) {
+    		if (cores[i] == cor) {
+    			cores[i] = Cor.VERMELHO1;
+    			int indice = peoes[i];
+    			peoes[i] = -1;
+    			return indice;
+    		}
+    	}
+    	return -1; //Erro
+    }
     
     public int verificaPosLivre() {
     	for (int i = 0; i < this.nElementos; i++) {

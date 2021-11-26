@@ -4,13 +4,11 @@ import java.util.ArrayList;
 
 public class Jogador {
 
-    private int ordem;
     private Cor c;
     private int inicio;
     private Peao[] peoes = new Peao[6];
     
-    public Jogador(Model.Cor c, int ordem, int inicio) {
-    	this.ordem = ordem;
+    public Jogador(Model.Cor c, int inicio) {
     	this.c = c;
     	this.inicio = inicio;
     	
@@ -21,10 +19,6 @@ public class Jogador {
 
     public Model.Cor getCor() {
         return c;
-    }
-
-    public int getOrdem() {
-        return ordem;
     }
     
     public int getInicio() {
@@ -37,9 +31,5 @@ public class Jogador {
 
     public void setCor(Model.Cor c) {
         this.c = c;
-    }
-
-    public void setOrdem(int ordem) {
-        this.ordem = ordem;
     }
 }

@@ -20,6 +20,10 @@ public class Peao {
         this.c = c;
     }
 
+    public void finalizar() {
+    	this.finalizado = true;
+    }
+    
     public int getId() {
         return id;
     }
