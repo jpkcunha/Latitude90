@@ -1,9 +1,5 @@
 package Model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.Scanner;	
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -19,10 +15,11 @@ public class Partida {
     public  int numJogadores;
     public boolean isDupla;
     public Tabuleiro t;
-    private HashMap<String,Jogador> listaJogadores;
     public HashMap<String, String> duplas;
     public Queue<String> filaJogadores;
 
+    private HashMap<String,Jogador> listaJogadores;
+    private String[] coresDado = new String[] {"Amarelo", "Verde", "Preto", "Azul", "Aleatório"};
     
     private Partida(){}
     
@@ -47,30 +44,47 @@ public class Partida {
     		duplas.put(ordem[i], hashDuplas.get(ordem[i]));
     		filaJogadores.add(ordem[i]);
     		listaJogadores.put(ordem[i], j);
-    	}    	
+    	}	
+
+    	preenchePolos(ordem);
+    	System.out.println(this.numJogadores);
+    	System.out.println(inicio.get(ordem[0]));
+    	System.out.println(inicio.get(ordem[1]));
+    	System.out.println(inicio.get(ordem[2]));
+    	System.out.println(inicio.get(ordem[3]));
+    	System.out.println(getVez());
+    	
     }
 
+    private void preenchePolos(String[] ordem) {
+    	int polo, pos;
+    	Jogador j;
+    	Casa p;
+    	for (int i = 0; i < numJogadores; i++) {
+    		pos = 0;
+    		j = listaJogadores.get(ordem[i]);
+    		polo = j.getInicio();
+    		p = this.t.getPolo(polo);
+    		if (p.getPeoes()[0] != -1) pos = 1; //Os pinos de um jogador já foram adicionados
+    		for (int k = 6*pos; k < 6*(pos+1); k++) {
+    			p.adicionaPeao(j.getPeoes()[i], getCor(duplas.get(ordem[i])));
+    			System.out.printf("Peao %d do jogador %s\n", k, getCorInv(j.getCor()));
+    		}
+    	}
+    }
     
-    
-    public void movePeao(int xi, int yi, int xf, int yf, String CorJogador) {
+    public void movePeao(int xi, int yi, int xf, int yf, String corJogador) {
     	Casa inicio, fim;
     	inicio = getCasa(xi, yi);
+    	int i = inicio.retiraPeao(getCor(corJogador));
+    	if (i == -1) return;
+
+    	Peao p = getPeao(corJogador, i);
+    	String s = duplas.get(corJogador);
+    	if (s == null) return;
+
     	fim = getCasa(xf, yf);
-    	int i = inicio.retiraPeao(getCor(CorJogador));
-    	
-    }
-        
-    public void iniciaRodada(int xi, int yi, int xf, int yf, String corVez) {
-    	System.out.println("Vez do " + corVez + "...");
-    	int d1 = jogaDadoNum();
-    	int d2 = jogaDadoNum();
-    	
-    	if (movePeao(xi, yi, xf, yf, d1, d2, corVez)) {
-    		System.out.println("Moveu a peca.");
-    	}
-    	else System.out.println("Não moveu a peca.");
-    	
-    	
+    	fim.adicionaPeao(p, getCor(s));
     	
     }
     
@@ -79,144 +93,49 @@ public class Partida {
     	return this.filaJogadores.peek();
     }
     
-    public void terminaRodada() {
-    	String terminouAVez = this.filaJogadores.remove();
-    	
-    	this.filaJogadores.add(terminouAVez);
-    }
-    
-    public int jogaDadoNum() {
-    	Dado d1 = new Dado();
-    	//checar valor
-    	return d1.getNumAleatorio(1, 7);
-    }
-    
-    public String jogaDadoCor() {
-    	Dado d1 = new Dado();
-    	Model.Cor c = d1.getCorAleatoria();
-    	return decifraCorJogador(c);
-    }
-    
-    public String decifraCorJogador(Cor c) {
-    	if (c.equals(Cor.AMARELO)) return "Amarelo";
-    	else if (c.equals(Cor.VERDE)) return "verde";
-    	else if (c.equals(Cor.PRETO)) return "Preto";
-    	else if (c.equals(Cor.AZUL)) return "Azul";
-    	return "Vermelho";
-    }
-    
-   
-    
-/*
-    private void escolheOrdem(List<Model.Cor> l, ArrayList<Integer> l2){
-    	
-        Scanner s = new Scanner(System.in);
-        System.out.println("Vamos ver quem começa!!");
-        int n = 0;
-        Model.Cor maior = Model.Cor.VERMELHO1;
-        Dado d = new Dado();
-        
-        for (int i = 0; i < numJogadores; i++) {
-            int atual = d.getNumAleatorio(6, 1);
-            System.out.printf("Jogador %s: você jogou o dado e saiu %d\n", l.get(i).toString(), atual);
-            
-            if (atual > n) {
-            	n = atual;
-            	maior = l.get(i);
-            	}
-        }
-        s.close();
-        
-        
-        int cont = 0;
-        Jogador p = new Jogador(maior, cont, l2.get(cont++));
-        ordem.add(p);
-        
-        if (maior == Model.Cor.PRETO) {
-        	if (l.contains(Model.Cor.AZUL)) {
-        		ordem.add(new Jogador(Model.Cor.AZUL, cont, l2.get(cont++)));
-        	}
-        	if (l.contains(Model.Cor.AMARELO)) {
-        		ordem.add(new Jogador(Model.Cor.AMARELO, cont, l2.get(cont++)));
-        	}
-        	if (l.contains(Model.Cor.VERDE)) {
-        		ordem.add(new Jogador(Model.Cor.VERDE, cont, l2.get(cont++)));
-        	}
-        }
-        
-        else if (maior == Model.Cor.AZUL) {
-        	if (l.contains(Model.Cor.AMARELO)) {
-        		ordem.add(new Jogador(Model.Cor.AMARELO, cont, l2.get(cont++)));
-        	}
-        	if (l.contains(Model.Cor.VERDE)) {
-        		ordem.add(new Jogador(Model.Cor.VERDE, cont, l2.get(cont++)));
-        	}
-        	if (l.contains(Model.Cor.PRETO)) {
-        		ordem.add(new Jogador(Model.Cor.PRETO, cont, l2.get(cont++)));
-        	}
-        }
-        
-        else if (maior == Model.Cor.AMARELO) {
-        	if (l.contains(Model.Cor.VERDE)) {
-        		ordem.add(new Jogador(Model.Cor.VERDE, cont, l2.get(cont++)));
-        	}
-        	if (l.contains(Model.Cor.PRETO)) {
-        		ordem.add(new Jogador(Model.Cor.PRETO, cont, l2.get(cont++)));
-        	}
-        	if (l.contains(Model.Cor.AZUL)) {
-        		ordem.add(new Jogador(Model.Cor.AZUL, cont, l2.get(cont++)));
-        	}
-        }
-        
-        
-        else if (maior == Model.Cor.VERDE) {
-        	if (l.contains(Model.Cor.PRETO)) {
-        		ordem.add(new Jogador(Model.Cor.PRETO, cont, l2.get(cont++)));
-        	}
-        	if (l.contains(Model.Cor.AZUL)) {
-        		ordem.add(new Jogador(Model.Cor.AZUL, cont, l2.get(cont++)));
-        	}
-        	if (l.contains(Model.Cor.AMARELO)) {
-        		ordem.add(new Jogador(Model.Cor.AMARELO, cont, l2.get(cont++)));
-        	}
-        }
-        
-        System.out.printf("O jogador a começar é o %s\n", maior.toString());
-        
-    }
-*/    
-
-    //y -> latitude -> raio
-    //x -> longitude -> theta
-    
-    /*
-    public void criaPartida(){
-    	
-    	System.out.println("Partida iniciada");
-    	
-    	Casa c = this.t.getPolo(0);
-    	
-    	System.out.println(this.t.getPolo(1).getCores()[1]);
-    	
+    public void passaVez() {
+    	String anterior = this.filaJogadores.remove();
+    	this.filaJogadores.add(anterior);
+    	System.out.printf("%s passou a vez! Vez do %s!\n", anterior, getVez());
     	
     }
-*/
     
+    public int jogaDadoNum() { return (int) (Math.random()*6 + 1); }
+    
+    public String jogaDadoCor() { return coresDado[(int)(Math.random()*4)]; }
+    
+    public void finalizaPeao(String cor, int i) {
+    	Peao p = getPeao(cor, i);
+    	Jogador j = getJogador(cor);
+    	j.adicionaFinalizado();
+    	p.finalizar();
+    	
+    }
+    
+    public int verificaJogada(String cor, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
+    	return this.t.verificaJogada(getJogador(cor), xIni, yIni, xFin, yFin, n1, n2);
+    }
 
     // Get - atributos da classe Partida
     public int getNumJogadores() {
     	return numJogadores;
     }
 
-    
     // Get - classes do Model
-    
     public Cor getCor(String s) {
     	if (s.equals("Amarelo")) return Cor.AMARELO;
     	else if (s.equals("Azul")) return Cor.AZUL;
     	else if (s.equals("Preto")) return Cor.PRETO;
     	else if (s.equals("Verde")) return Cor.VERDE;
     	else return Cor.VERMELHO1;
+    }
+    
+    protected String getCorInv(Cor c) {
+    	if (c == Cor.AMARELO) return "Amarelo";
+    	else if (c == Cor.AZUL) return "Azul";
+    	else if (c == Cor.PRETO) return "Preto";
+    	else if (c == Cor.VERDE) return "Verde";
+    	else return "Vermelho";
     }
     
     public Casa getCasa(int x, int y){
@@ -226,12 +145,22 @@ public class Partida {
     	else return null; //Erro
     }
     
+    public Jogador getJogador(String s) { return listaJogadores.get(s); }
+    
     public Peao getPeao(String cor, int i) {
     	Jogador j = getJogador(cor);
     	if (j == null) return null;
     	if (i >= 0 && i < 6) return j.getPeoes()[i];
     	return null; //Erro
     }
+
+    public int getInicio(String cor) {
+    	Jogador j = getJogador(cor);
+    	return j.getInicio();
+    }
     
-    public Jogador getJogador(String s) { return listaJogadores.get(s); }
+    public int getFim(String cor) {
+    	Jogador j = getJogador(cor);
+    	return 1-j.getInicio();
+    }
 }

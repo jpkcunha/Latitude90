@@ -1,13 +1,13 @@
 package Model;
 
-public class Tabuleiro{
+class Tabuleiro{
 
 
     private Casa poloNorte;
     private Casa poloSul;
     private Casa[][] board;
     
-    public Tabuleiro() {
+    protected Tabuleiro() {
 
         poloNorte = new Casa();
         poloSul = new Casa();
@@ -20,6 +20,7 @@ public class Tabuleiro{
     	for (int i = 0; i < 12; i ++) {
     		for (int j = 0; j < 12; j ++) {
     			board[i][j] = new Casa (i, j);
+    			if (j >= 3 && j <= 8) board[i][j].setNumElementos(3);
     		}
     	}
     	
@@ -100,7 +101,7 @@ public class Tabuleiro{
     //x -> longitude
     //y -> latitude
     private boolean verificaMovimento(int xIni, int yIni, int xFin, int yFin, int n) {
-    	
+    	System.out.printf("Verifica movimento de (%d, %d) para (%d, %d) - pode andar %d\n", xIni, yIni, xFin, yFin, n);
     	System.out.println("Está no polo sul?");
     	//PoloSul
     	if (yIni == -1) return verificaBaixo(xFin, yIni, yFin, n);
@@ -131,12 +132,12 @@ public class Tabuleiro{
     }
     
     
-    public int verificaJogada(Jogador j, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
+    protected int verificaJogada(Jogador j, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
     	
     	//Verifica se o peão do jogador está na casa de inicio do movimento
     	int pos;
-    	if (xIni == -1) pos = this.poloSul.verificaPolo(j,  0);
-    	else if (xIni == -1) pos = this.poloNorte.verificaPolo(j,  1);
+    	if (xIni == -1) pos = this.poloSul.verificaPolo(j);
+    	else if (xIni == 12) pos = this.poloNorte.verificaPolo(j);
     	else pos = this.board[xIni][yIni].verificaPeao(j);
     	
     	//Jogador não contém peão dentro da casa inicial
@@ -159,6 +160,8 @@ public class Tabuleiro{
     		maior = n2;
     		menor = n1;
     	}
+    	System.out.println(maior);
+    	System.out.println(menor);
     	
     	//A jogada é possível utilizando somente o menor dado? (inclui passar pelos polos)
     	if (verificaMovimento(xIni, yIni, xFin, yFin, menor)) return menor;
@@ -168,6 +171,24 @@ public class Tabuleiro{
     	
     	//A jogada é possível utilizando um movimento único com a soma dos dados? (inclui passar pelos polos)
     	if (verificaMovimento(xIni, yIni, xFin, yFin, maior + menor)) return maior + menor;
+    	if (xIni == -1) {
+    		if ((verificaBaixo((12 + xFin + maior)%12, yIni, yFin, menor) && verificaEsquerda((12 + xFin + maior)%12, xFin, yFin, maior)) || 
+       			 verificaBaixo((12 + xFin - maior)%12, yIni, yFin, menor) && verificaDireita((12 + xFin - maior)%12, xFin, yFin, maior) ||
+       			 verificaBaixo((12 + xFin + maior)%12, yIni, yFin, maior) && verificaEsquerda((12 + xFin + menor)%12, xFin, yFin, maior) ||
+       			 verificaBaixo((12 + xFin - maior)%12, yIni, yFin, maior) && verificaDireita((12 + xFin - menor)%12, xFin, yFin, maior)) {
+    			return maior + menor;
+    		}
+    	}
+
+    	if (xIni == 12) {
+    		if ((verificaCima((12 + xFin + maior)%12, yIni, yFin, menor) && verificaEsquerda((12 + xFin + maior)%12, xFin, yFin, maior)) || 
+       			 verificaCima((12 + xFin - maior)%12, yIni, yFin, menor) && verificaDireita((12 + xFin - maior)%12, xFin, yFin, maior) ||
+       			 verificaCima((12 + xFin + maior)%12, yIni, yFin, maior) && verificaEsquerda((12 + xFin + menor)%12, xFin, yFin, maior) ||
+       			 verificaCima((12 + xFin - maior)%12, yIni, yFin, maior) && verificaDireita((12 + xFin - menor)%12, xFin, yFin, maior)) {
+    			return maior + menor;
+    		}
+    	}
+
     	
     	/* A jogada é possível em L (cada dado em uma direção)?
     	 * - Vertical com o menor dado e depois horizontal com o maior dado
@@ -178,8 +199,7 @@ public class Tabuleiro{
     	 * - Vertical com o maior dado e depois vertical com o menor dado (passando pelos polos)
     	 * OBS.: Sem casas bloqueadas, se houver caminho há 2 possíveis
     	 */
-    	
-    	if ((verificaMovimento(xIni, yIni, xIni, yFin, menor) && verificaMovimento(xIni, yFin, xFin, yFin, maior)) || 
+    	else if ((verificaMovimento(xIni, yIni, xIni, yFin, menor) && verificaMovimento(xIni, yFin, xFin, yFin, maior)) || 
            (verificaMovimento(xIni, yIni, xIni, yFin, maior) && verificaMovimento(xIni, yFin, xFin, yFin, menor)) ||
            (verificaMovimento(xIni, yIni, xFin, yIni, menor) && verificaMovimento(xFin, yIni, xFin, yFin, maior)) ||
            (verificaMovimento(xIni, yIni, xFin, yIni, maior) && verificaMovimento(xFin, yIni, xFin, yFin, menor)) || 
@@ -192,14 +212,14 @@ public class Tabuleiro{
     }
     
     /* Geters and Seters*/
-    public Casa getPolo(int polo) {
+    protected Casa getPolo(int polo) {
         if (polo == 0) return poloSul;
         return poloNorte;
 
     }
 
 
-    public Casa[][] getBoard() {
+    protected Casa[][] getBoard() {
         return board;
     }
     

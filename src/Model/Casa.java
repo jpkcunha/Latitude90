@@ -1,6 +1,6 @@
 package Model;
 
-public class Casa{
+class Casa{
 
     private int isSpecial;
     private boolean isFull;
@@ -10,7 +10,7 @@ public class Casa{
     private int nElementos;
     private Model.Cor[] cores;
 
-    public Casa() {
+    protected Casa() {
     	this.isSpecial = -1;
     	this.isFull = false;
     	this.peoes = new int[] {-1, -1};
@@ -18,7 +18,7 @@ public class Casa{
     	this.nElementos = 2;
     }
 
-    public Casa(int x, int y) {
+    protected Casa(int x, int y) {
     	this.isSpecial = -1;
     	this.isFull = false;
     	this.peoes = new int[] {-1, -1};
@@ -28,13 +28,13 @@ public class Casa{
     	this.posY = y;
     }
     
-    public void setPosX(int x) { this.posX = x; }
+    protected void setPosX(int x) { this.posX = x; }
     
 
-    public void setPosY(int y) { this.posY = y; }
+    protected void setPosY(int y) { this.posY = y; }
     
     
-    public void setPolo(int polo) {
+    protected void setPolo(int polo) {
     	if (polo == 0)	this.posX = -1; //Polo Sul
     	else if (polo == 1) posX = 12; //Polo Norte
     	else return; //Erro
@@ -45,28 +45,26 @@ public class Casa{
     }
     
     
-    public void setCor(Cor c) {
+    protected void setCor(Cor c) {
     	if (this.cores[0] == Cor.VERMELHO1) this.cores[0] = c;
     	else if (this.cores[1] == Cor.VERMELHO1) this.cores[1] = c;
     }
     
-    public void setSpecial(int n) {
+    protected void setSpecial(int n) {
     	this.isSpecial = n;
     }
     
     
     
     //Retorna o índice do peao do jogador que estiver na casa ou -1 se inexistente
-    public int verificaPeao(Jogador j) {
+    protected int verificaPeao(Jogador j) {
     	if (j.getCor() == cores[0]) return peoes[0];
     	else if (j.getCor() == cores[1]) return peoes[1];
     	return -1; //Não há peão
     }
     
     //Verifica se há peão no polo
-    public int verificaPolo(Jogador j, int polo) {
-    	if (this.cores[0] != j.getCor() && this.cores[1] != j.getCor()) return -1;
-    	
+    protected int verificaPolo(Jogador j) {    	
     	int pos;
     	if (this.cores[0] == j.getCor()) pos = 0;
     	else if (this.cores[1] == j.getCor()) pos = 1;
@@ -74,12 +72,13 @@ public class Casa{
     	
     	for (int i = 6*pos; i < 6*(pos+1); i++) if (this.peoes[i] != -1) return this.peoes[i];
     	
+    	cores[pos] = Cor.VERMELHO1; //Corrige erro - casa vazia para aquela cor
     	return -1;
     }
 
     
     //Adiciona - modo individual significa cor dupla == VERMELHO1
-    public void adicionaPeao(Peao p, Model.Cor dupla) {
+    protected void adicionaPeao(Peao p, Model.Cor dupla) {
     	if (this.isFull) return; //Casa cheia
     	else if (cores[0] == Cor.VERMELHO1 && cores[1] == Cor.VERMELHO1) { //Casa vazia
     		peoes[0] = p.getId();
@@ -112,7 +111,8 @@ public class Casa{
     }
     
     //Retorna índice do peão
-    public int retiraPeao(Model.Cor cor) {
+    protected int retiraPeao(Model.Cor cor) {
+    	if (posX == -1 || posX == 12) return retiraPeaoPolo(cor);
     	for (int i = peoes.length - 1; i < 0; i --) {
     		if (cores[i] == cor) {
     			cores[i] = Cor.VERMELHO1;
@@ -124,39 +124,44 @@ public class Casa{
     	return -1; //Erro
     }
 
-    public int retiraPolo(Model.Cor cor) {
+    private int retiraPeaoPolo(Model.Cor cor) {
     	int pos;
     	if (cores[0] == cor) pos = 0;
     	else if (cores[1] == cor) pos = 1;
-    	for (int i = ; i < 0; i --) {
-    		if (cores[i] == cor) {
-    			cores[i] = Cor.VERMELHO1;
+    	else return -1;
+    		
+    	for (int i = 6*(pos+1) - 1; i <= 6*pos; i --) {
+    		if (peoes[i] != -1) {
     			int indice = peoes[i];
     			peoes[i] = -1;
+    			if (i == 6*pos - 1) cores[pos] = Cor.VERMELHO1;
     			return indice;
     		}
     	}
     	return -1; //Erro
     }
     
-    public int verificaPosLivre() {
+    protected int verificaPosLivre() {
     	for (int i = 0; i < this.nElementos; i++) {
-    		if (peoes[i] == -1) return i; 
+    		//Retorna primeira posição vazia e sem ficha
+    		if (peoes[i] == -1 && i != this.isSpecial) return i;
     	}
     	return -1; //Erro
     }
     
-    public int getIsSpecial() {return isSpecial;}
+    protected void setNumElementos(int n) { this.nElementos = n; }
     
-    public boolean getIsFull() {return isFull;}
+    protected int getIsSpecial() {return isSpecial;}
+    
+    protected boolean getIsFull() {return isFull;}
 
-    public int getPosX() {return posX;}
+    protected int getPosX() {return posX;}
     
-    public int getPosY() {return posY;}
+    protected int getPosY() {return posY;}
     
-    public int[] getPeoes() {return peoes;}
+    protected int[] getPeoes() {return peoes;}
     
-    public Cor[] getCores() {return cores;}
+    protected Cor[] getCores() {return cores;}
 
 
 }
