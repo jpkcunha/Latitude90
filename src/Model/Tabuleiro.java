@@ -69,11 +69,16 @@ class Tabuleiro{
 
     private boolean verificaBaixo(int x, int yIni, int yFin, int n) {
     	int i, y = yIni;
-    	
+    	Casa c;
 		for (i = 1; i <= n; i++) {
 			y++;
-			if (board[x][y].getIsFull()) break; //Caminho bloqueado
-			if (y == 6 && x != 2 && x != 3 && x != 8 && x != 9) break;
+			if (y != 12) {
+				if (x == -1) c = this.poloSul;
+				else if (x == 12) c = this.poloNorte;
+				else c = this.board[x][y];
+				if (c.getIsFull()) break; //Caminho bloqueado
+				if (y == 6 && x != 2 && x != 3 && x != 8 && x != 9) break;
+			}
 		}
 		if (i == n+1 && y == yFin) {
 			System.out.println("Pode andar pra baixo!");
@@ -84,11 +89,18 @@ class Tabuleiro{
     
     private boolean verificaCima(int x, int yIni, int yFin, int n) {
     	int i, y = yIni;
-    	
+    	Casa c;
 		for (i = 1; i <= n; i++) {
+			System.out.printf("i=%d, y=%d, n=%d\n", i, y, n);
 			y--;
-			if (board[x][y].getIsFull()) break; //Caminho bloqueado
-			if (y == 5 && x != 2 && x != 3 && x != 8 && x != 9) break;
+			if (y != -1) {
+			
+				if (x == -1) c = this.poloSul;
+				else if (x == 12) c = this.poloNorte;
+				else c = this.board[x][y];
+				if (c.getIsFull()) break; //Caminho bloqueado
+				if (y == 5 && x != 2 && x != 3 && x != 8 && x != 9) break;
+			}
 		}
 		if (i == n+1 && y == yFin) {
 			System.out.println("Pode andar pra cima!");
@@ -110,21 +122,22 @@ class Tabuleiro{
     	//PoloNorte
     	if (yIni == 12) return verificaCima(xFin, yIni, yFin, n);
 
-    	System.out.println("Está na mesma latitude?");
-    	//Movimentação dentro da mesma latitude
-    	if (yIni == yFin) return verificaDireita(xIni, xFin, yIni, n) || verificaEsquerda(xIni, xFin, yIni, n); 
-
-    	System.out.println("Passa pelo polo sul?");
-    	//Chega no polo sul - movimentação para baixo em qualquer longitude
-    	if (verificaCima(xIni, yIni, -1, yIni + 1)) return verificaBaixo(xFin, -1, yFin, n - (yIni + 1));
-
-    	System.out.println("Passa pelo polo norte?");
-    	//Chega no polo norte - movimentação para cima em qualquer longitude
-    	if (verificaBaixo(xIni, yIni, 12, 12 - yIni)) return verificaCima(xFin, 12, yFin, n - (12 - yIni));
 
     	System.out.println("Vertical sem chegar nos polos?");
     	//Movimentação vertical sem chegar nos polos
-    	if (verificaBaixo(xIni, yIni, yFin, n) || verificaCima(xIni, yIni, yFin, n)) return true;
+    	if (xIni == xFin) {
+	    	if (n <= 12 - xIni && verificaBaixo(xIni, yIni, yFin, n)) return true;
+	    	if (n <= xIni + 1 && verificaCima(xIni, yIni, yFin, n)) return true;
+    	}
+    	
+    	System.out.println("Passa pelo polo?");
+    	//Chega no polo - movimentação para baixo em qualquer longitude
+    	if ((verificaCima(xIni, yIni, -1, yIni + 1) && n >= yIni + 1) || verificaBaixo(xIni, yIni, 12, 12 - yIni))
+    		return verificaBaixo(xFin, -1, yFin, n - (yIni + 1)) || verificaCima(xFin, 12, yFin, n - (12 - yIni));
+    	
+    	System.out.println("Está na mesma latitude?");
+    	//Movimentação dentro da mesma latitude
+    	if (yIni == yFin) return verificaDireita(xIni, xFin, yIni, n) || verificaEsquerda(xIni, xFin, yIni, n); 
     	
     	System.out.println("Movimento inválido");
     	return false;
@@ -135,22 +148,6 @@ class Tabuleiro{
     protected int verificaJogada(Jogador j, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
     	System.out.printf("Verifica jogada de (%d, %d) para (%d, %d) - %d e %d\n", xIni, yIni, xFin, yFin, n1, n2);
     	//Verifica se o peão do jogador está na casa de inicio do movimento
-    	int pos;
-    	if (xIni == -1) pos = this.poloSul.verificaPolo(j);
-    	else if (xIni == 12) pos = this.poloNorte.verificaPolo(j);
-    	else pos = this.board[xIni][yIni].verificaPeao(j);
-    	System.out.printf("Pos=%d\n", pos);
-    	//Jogador não contém peão dentro da casa inicial
-    	if (pos == -1) return 0;
-    	
-    	/*
-    	int xIni, yIni, xFin, yFin, maior, menor;
-    	
-    	xIni = inicio.getPosX();
-    	yIni = inicio.getPosY();
-    	xFin = fim.getPosX();
-    	yFin = fim.getPosY();*/
-    	
     	int maior, menor;
     	if (n1 > n2) {
     		maior = n1;
@@ -172,6 +169,7 @@ class Tabuleiro{
     	//A jogada é possível utilizando um movimento único com a soma dos dados? (inclui passar pelos polos)
     	if (verificaMovimento(xIni, yIni, xFin, yFin, maior + menor)) return maior + menor;
     	if (xIni == -1) {
+    		System.out.println("L saindo do polo sul");
     		if ((verificaBaixo((12 + xFin + maior)%12, yIni, yFin, menor) && verificaEsquerda((12 + xFin + maior)%12, xFin, yFin, maior)) || 
        			 verificaBaixo((12 + xFin - maior)%12, yIni, yFin, menor) && verificaDireita((12 + xFin - maior)%12, xFin, yFin, maior) ||
        			 verificaBaixo((12 + xFin + maior)%12, yIni, yFin, maior) && verificaEsquerda((12 + xFin + menor)%12, xFin, yFin, maior) ||
@@ -180,7 +178,8 @@ class Tabuleiro{
     		}
     	}
 
-    	if (xIni == 12) {
+    	else if (xIni == 12) {
+    		System.out.println("L saindo do polo norte");
     		if ((verificaCima((12 + xFin + maior)%12, yIni, yFin, menor) && verificaEsquerda((12 + xFin + maior)%12, xFin, yFin, maior)) || 
        			 verificaCima((12 + xFin - maior)%12, yIni, yFin, menor) && verificaDireita((12 + xFin - maior)%12, xFin, yFin, maior) ||
        			 verificaCima((12 + xFin + maior)%12, yIni, yFin, maior) && verificaEsquerda((12 + xFin + menor)%12, xFin, yFin, maior) ||
@@ -199,7 +198,8 @@ class Tabuleiro{
     	 * - Vertical com o maior dado e depois vertical com o menor dado (passando pelos polos)
     	 * OBS.: Sem casas bloqueadas, se houver caminho há 2 possíveis
     	 */
-    	else if ((verificaMovimento(xIni, yIni, xIni, yFin, menor) && verificaMovimento(xIni, yFin, xFin, yFin, maior)) || 
+    	else 
+    		if ((verificaMovimento(xIni, yIni, xIni, yFin, menor) && verificaMovimento(xIni, yFin, xFin, yFin, maior)) || 
            (verificaMovimento(xIni, yIni, xIni, yFin, maior) && verificaMovimento(xIni, yFin, xFin, yFin, menor)) ||
            (verificaMovimento(xIni, yIni, xFin, yIni, menor) && verificaMovimento(xFin, yIni, xFin, yFin, maior)) ||
            (verificaMovimento(xIni, yIni, xFin, yIni, maior) && verificaMovimento(xFin, yIni, xFin, yFin, menor)) || 

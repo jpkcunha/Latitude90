@@ -8,9 +8,31 @@ import java.util.Queue;
 import java.util.Scanner;
 
 public class controller {
+
+	private Partida p;
+	private Menu m;
+	private FrameTabuleiro t;
 	
 	public controller() {
-		Partida p = Partida.getPartida();
+		
+
+		Imagem.carregar();
+		this.p = Partida.getPartida();
+		this.m = new Menu();
+		this.m.abrir();
+	
+		
+		
+		
+		while(m.isVisible()) {
+			
+			System.out.println("chega");
+
+		}
+		ObservadoInfo novo = new ObservadoInfo(p);
+		this.t = new FrameTabuleiro(novo , 2, false );
+		
+		ObservadorButton b = new ObservadorButton(novo , t.getObervadoButton() ,p, "Vermelho");
 		
 		//(int nJog, boolean dupla, String[] ordem, HashMap<String, Integer> inicio, HashMap<String, String> hashDuplas);
 		int n = 4;
@@ -43,7 +65,7 @@ public class controller {
 		
 		Scanner s = new Scanner(System.in);
 		String jog, str = null;
-		int polo, xi, yi, peao, lat, lon, result;
+		int polo, xi, yi, xf, yf, peao, lat, lon, result;
 		for (int rodada = 1; rodada < 10; rodada++) {
 			for (int vez = 0; vez < 4; vez++) {
 				while (str != "") {
@@ -69,21 +91,21 @@ public class controller {
 					
 				}
 				else {
-					System.out.println("Selecione um peão:");
-					peao = s.nextInt();
+					//System.out.println("Selecione um peão:");
+					//peao = s.nextInt();
 					System.out.println("Selecione uma latitude:");
-					lat = s.nextInt();
+					yi = s.nextInt();
 					System.out.println("Selecione uma longitude:");
-					lon = s.nextInt();
-					polo = p.getInicio(jog);
+					xi = s.nextInt();
+					System.out.println("Selecione uma latitude final:");
+					yf = s.nextInt();
+					System.out.println("Selecione uma longitude final:");
+					xf = s.nextInt();
 					
-					if (polo == 0) xi = -1;
-					else xi = 12;
-					yi = xi;
-					
-					
-					result = p.verificaJogada(jog,  xi, yi, lon, lat, d1, d2);
+					result = p.verificaJogada(jog,  xi, yi, xf, yf, d1, d2);
 					System.out.printf("==> %d\n",result);
+					if (result != 0) p.movePeao(xi, yi, xf, yf, jog);
+					else System.out.println("Não se movimentou");
 					
 					}
 				
@@ -93,13 +115,22 @@ public class controller {
 			}
 		}
 				
-			
+	
 		
 	}
 	
+	public void calculaPosicao(int lat, int lon) {
+		int[] peoes = p.getPeoes(lon, lat);
+		int pos;
+		for (int i = 0; i < peoes.length; i++) {
+			if (peoes[i] == -1 && p.getSpecial(lon, lat) != i) pos = i; 
+		}
+	}
+	
+	
     
 	public static void main(String args[]) {
-		controller c = new controller();
+		new controller();
 	}
 	
 	/*

@@ -97,8 +97,8 @@ public class Menu extends JFrame implements ActionListener{
 
         } else if (obj.equals(botaoComecarPartida)) {  // apertou o botao de comecar partida
             System.out.println("Começar jogo");
-            FrameTabuleiro t = new FrameTabuleiro(this.qtoJogadores, this.dupla);
-            t.abrir();
+            //FrameTabuleiro t = new FrameTabuleiro(this.qtoJogadores, this.dupla);
+            //t.abrir();
             fecha();           
             
 
@@ -122,6 +122,14 @@ public class Menu extends JFrame implements ActionListener{
             System.out.printf("==> %s\n", quantidade);
             //this.quantidadeJogadores = Integer.parseInt(String.valueOf(quantidade.charAt(0)));
         }
+    }
+    
+    public void abrir() {
+    	this.setVisible(true);
+    }
+    
+    public void fechar() {
+    	this.setVisible(false);
     }
     
 	public static void main(String args[]) {

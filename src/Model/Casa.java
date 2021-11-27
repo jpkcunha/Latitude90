@@ -110,6 +110,38 @@ class Casa{
     	}
     }
     
+    //Adiciona - modo individual significa cor dupla == VERMELHO1
+    protected void adicionaPolo(Peao p, Model.Cor dupla) {
+    	int i;
+    	if (this.isFull) return; //Casa cheia
+    	else if (cores[0] == Cor.VERMELHO1 && cores[1] == Cor.VERMELHO1) { //Casa vazia
+    		peoes[0] = p.getId();
+    		cores[0] = p.getCor();
+    	}
+    	else if (cores[0] == p.getCor()) { //Pinos existentes
+    		for (i = 0; i < 6; i++) {
+    			if (peoes[i] == -1) {
+    				peoes[i] = p.getId();
+    				break;
+    			}
+    		}
+    	}
+    	else if (cores[1] == p.getCor()) { //Pinos existentes
+    		for (i = 6; i < 12; i++) {
+    			if (peoes[i] == -1) {
+    				peoes[i] = p.getId();
+    				break;
+    			}
+    		}
+    	}
+    	else if (cores[1] == Cor.VERMELHO1) {
+    		peoes[6] = p.getId();
+    		cores[1] = p.getCor();
+    	}
+    	for (i = 0; i < 12; i ++) if (peoes[i] == -1) break;
+    	if (i == 12) this.isFull = true;
+    }
+    
     //Retorna índice do peão
     protected int retiraPeao(Model.Cor cor) {
     	if (posX == -1 || posX == 12) return retiraPeaoPolo(cor);

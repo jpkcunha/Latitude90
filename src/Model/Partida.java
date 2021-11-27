@@ -17,9 +17,13 @@ public class Partida {
     public Tabuleiro t;
     public HashMap<String, String> duplas;
     public Queue<String> filaJogadores;
+    private int dado1 = -1;
+    private int dado2 = -1;
+    private String dado3;
 
     private HashMap<String,Jogador> listaJogadores;
     private String[] coresDado = new String[] {"Amarelo", "Verde", "Preto", "Azul", "Aleatório"};
+
     
     private Partida(){}
     
@@ -67,12 +71,25 @@ public class Partida {
     		p = this.t.getPolo(polo);
     		if (p.getPeoes()[0] != -1) pos = 1; //Os pinos de um jogador já foram adicionados
     		for (int k = 6*pos; k < 6*(pos+1); k++) {
-    			p.adicionaPeao(j.getPeoes()[k-6*pos], getCor(duplas.get(ordem[i])));
+    			p.adicionaPolo(j.getPeoes()[k-6*pos], getCor(duplas.get(ordem[i])));
     			System.out.printf("Peao %d do jogador %s\n", k-6*pos, getCorInv(j.getCor()));
     		}
     	}
+    	exibe();
     }
     
+    public void exibe() {
+    	int[] peoes = this.t.getPolo(0).getPeoes();
+    	Cor[] cores = this.t.getPolo(0).getCores();
+    	for (int i = 0; i < peoes.length; i++) System.out.println(peoes[i]);
+    	for (int i = 0; i < cores.length; i++) System.out.println(cores[i]); 
+    	peoes = this.t.getPolo(1).getPeoes();
+    	cores = this.t.getPolo(1).getCores();
+    	for (int i = 0; i < peoes.length; i++) System.out.println(peoes[i]);
+    	for (int i = 0; i < cores.length; i++) System.out.println(cores[i]); 
+    	
+    }
+
     public void movePeao(int xi, int yi, int xf, int yf, String corJogador) {
     	Casa inicio, fim;
     	inicio = getCasa(xi, yi);
@@ -85,6 +102,7 @@ public class Partida {
 
     	fim = getCasa(xf, yf);
     	fim.adicionaPeao(p, getCor(s));
+    	exibe();
     	
     }
     
@@ -100,9 +118,12 @@ public class Partida {
     	
     }
     
+    
+    
     public int jogaDadoNum() { return (int) (Math.random()*6 + 1); }
     
     public String jogaDadoCor() { return coresDado[(int)(Math.random()*4)]; }
+   
     
     public void finalizaPeao(String cor, int i) {
     	Peao p = getPeao(cor, i);
@@ -163,4 +184,33 @@ public class Partida {
     	Jogador j = getJogador(cor);
     	return 1-j.getInicio();
     }
+    
+    public int[] getPeoes(int x, int y) {
+    	return getCasa(x, y).getPeoes();
+    }
+    
+    public String[] getCores(int x, int y) {
+    	Cor[] aux;
+    	String[] s = new String[2];
+    	aux = getCasa(x, y).getCores();
+    	s[0] = getCorInv(aux[0]);
+    	s[1] = getCorInv(aux[1]);
+    	return s;
+    	
+    }
+    
+    public int getSpecial(int x, int y) { return getCasa(x, y).getIsSpecial(); }
+    
+    public int getDado1() { return dado1; }
+    
+    public int getDado2() { return dado2; }
+    
+    public String getDado3()  { return dado3; }
+
+    public void setDado1() { dado1 = jogaDadoNum(); }
+    
+    public void setDado2() { dado2 = jogaDadoNum(); }
+    
+    public void setDado3() { dado3 = jogaDadoCor(); }
+
 }

@@ -7,6 +7,8 @@ import java.lang.Math.*;
 import java.util.ArrayList;	
 import java.util.HashMap;
 
+import Controller.ObservadoInfo;
+import Controller.ObservadorButton;
 //TEM QUE TIRAR!!!!
 import java.util.Random;
 
@@ -52,11 +54,32 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 	
 	public int [][]pecasEspeciais = new int[12][2];
 	
-	public int x = 195;
-	public int y = 325;
+	private int botaoApertado = -1;
+	private int ndado1;
+	private int ndado2;
 	
+	private ObservadoButton b = new ObservadoButton(this);
+	private ObservadoInfo novo;
+	
+	public ObservadoButton getObervadoButton() {
+		return this.b;
+	}
+	
+	public void setndado1(int n) {
+		this.ndado1 = n;
+	}
+	
+	public void setndado2(int n) {
+		this.ndado2 = n;
+	}
+	
+	public FrameTabuleiro(ObservadoInfo novo, int qtoJogadores, boolean dupla) {
+		
+		this.setVisible(true);	
 
-	public FrameTabuleiro(int qtoJogadores, boolean dupla) {
+		this.novo = novo;
+		
+		ObservadorInfo novo2 = new ObservadorInfo(novo, this);
 		
 		
 		this.dupla = dupla;
@@ -136,6 +159,10 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 
 	public void desenha() {
 		this.repaint();
+	}
+	
+	public int getBotaoApertado() {
+		return this.botaoApertado;
 	}
 
     @Override
@@ -303,10 +330,14 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
         	String dado3 = (String)opcaoCor.getSelectedItem();
 
         	if (dado1.equals("Aleatório") && dado2.equals("Aleatório")) {
-        		val1 = (int)(Math.random()*6) + 1;
-        		val2 = (int)(Math.random()*6) + 1;
-        		System.out.printf("Joga dado 1 Aleatório ==> %d\n", val1);
-        		System.out.printf("Joga dado 2 Aleatório ==> %d\n", val2);
+        		/*val1 = (int)(Math.random()*6) + 1;
+        		val2 = (int)(Math.random()*6) + 1; */
+        		
+        		this.botaoApertado = 1;
+        		
+        		b.varrerDados();
+        		//System.out.printf("Joga dado 1 Aleatório ==> %d\n", val1);
+        		//System.out.printf("Joga dado 2 Aleatório ==> %d\n", val2);
         	}
 
         	else if (dado1.equals("Aleatório")) {
@@ -335,8 +366,8 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
         		
         	}
 
-    		dadoAtual1 = Imagem.get("Dado", val1);
-    		dadoAtual2 = Imagem.get("Dado", val2);
+    		dadoAtual1 = Imagem.get("Dado", ndado1);
+    		dadoAtual2 = Imagem.get("Dado", ndado2);
     		dadoCorAtual = Imagem.get("Dado" + dado3);
     		this.repaint();
         	
@@ -365,9 +396,10 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
     @Override
     public void mouseReleased(MouseEvent e) {}
     
+    /*
     public void abrir() {
     	this.setVisible(true);
-    }
+    }*/
     
     private int calculaLongitude(int x, int y) {
     	double theta, dx, dy;
@@ -471,7 +503,7 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
     	if (latitude > 2 && latitude < 9) calculaPosicao(latitude, longitude, 2);
     }
     
-    public void calculaPosicao(int latitude, int longitude, int pos) {
+    public int[] calculaPosicao(int latitude, int longitude, int pos) {
     	int x, y;
     	double theta;
     	
@@ -495,9 +527,10 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
     		y = (int)((50 + 26*latitude)*Math.sin(theta));
     	}
     	
-    	System.out.printf("Latitude %d, longitude %d, posição %d: x=%d y=%d\n", latitude, longitude, pos, x, y);
-    	
+    	return new int[] {x,y};
     }
+    
+    
     
     private void inicializaVetores() {
     	for (int i =0; i < 6; i++) {
