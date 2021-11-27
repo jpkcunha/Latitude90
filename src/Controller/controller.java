@@ -30,9 +30,9 @@ public class controller {
 
 		}
 		ObservadoInfo novo = new ObservadoInfo(p);
-		this.t = new FrameTabuleiro(novo , 2, false );
+		this.t = new FrameTabuleiro( 2, false );
 		
-		ObservadorButton b = new ObservadorButton(novo , t.getObervadoButton() ,p, "Vermelho");
+		//ObservadorButton b = new ObservadorButton(novo , t.getObervadoButton() ,p, "Vermelho");
 		
 		//(int nJog, boolean dupla, String[] ordem, HashMap<String, Integer> inicio, HashMap<String, String> hashDuplas);
 		int n = 4;
@@ -119,16 +119,32 @@ public class controller {
 		
 	}
 	
-	public void calculaPosicao(int lat, int lon) {
-		int[] peoes = p.getPeoes(lon, lat);
-		int pos;
+	
+	public void movePeao(int xi, int yi, int xf, int yf, String cor) {
+		int[] peoes = p.getPeoes(xi, yi);
+		int id, pos = 0;
 		for (int i = 0; i < peoes.length; i++) {
-			if (peoes[i] == -1 && p.getSpecial(lon, lat) != i) pos = i; 
+			if (peoes[i] == -1 && p.getSpecial(xf, yf) != i) pos = i; 
 		}
+		id = p.movePeao(xi, yi, xf, yf, cor);
+		t.mudaPosicao(yf, xf, pos, cor, id);
 	}
 	
+	public void verificaJogada(String cor, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
+		if (p.verificaJogada(cor, xIni, yIni, xFin, yFin, n1, n2) > 0) {
+			//move
+			//verifica se come
+			//verifica especial
+		}
+		
+	}
 	
-    
+    public void passaVez() {
+    	p.passaVez();
+    	t.setVezAtual(p.getVez());
+    	t.setFlag(0);
+    }
+	
 	public static void main(String args[]) {
 		new controller();
 	}
@@ -137,7 +153,6 @@ public class controller {
 	 * iniciaPartida
 	 * finalizaPartida
 	 * verificaJogada
-	 * verificaMovimento
 	 * verificaAdversario
 	 * verificaEspecial
 	 * efeitoCarta
@@ -156,7 +171,7 @@ public class controller {
 	 * 2- joga dado
 	 * 2a - valores diferentes = dados normais
 	 * 2b - valores iguais = dado especial; se cor = corJogador finalizaPeao; senao PASSA A VEZ
-	 * 3- escolhe x,y inicio
+	 * 3- escolhe x,y inicio++--
 	 * 4- escolhe x,y fim
 	 * 5- verifica movimentacao
 	 * 5a- true: verifica se come peça; true come, false PASSA A VEZ

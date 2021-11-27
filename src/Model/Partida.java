@@ -75,34 +75,19 @@ public class Partida {
     			System.out.printf("Peao %d do jogador %s\n", k-6*pos, getCorInv(j.getCor()));
     		}
     	}
-    	exibe();
-    }
-    
-    public void exibe() {
-    	int[] peoes = this.t.getPolo(0).getPeoes();
-    	Cor[] cores = this.t.getPolo(0).getCores();
-    	for (int i = 0; i < peoes.length; i++) System.out.println(peoes[i]);
-    	for (int i = 0; i < cores.length; i++) System.out.println(cores[i]); 
-    	peoes = this.t.getPolo(1).getPeoes();
-    	cores = this.t.getPolo(1).getCores();
-    	for (int i = 0; i < peoes.length; i++) System.out.println(peoes[i]);
-    	for (int i = 0; i < cores.length; i++) System.out.println(cores[i]); 
-    	
     }
 
-    public void movePeao(int xi, int yi, int xf, int yf, String corJogador) {
+    public int movePeao(int xi, int yi, int xf, int yf, String corJogador) {
     	Casa inicio, fim;
     	inicio = getCasa(xi, yi);
     	int i = inicio.retiraPeao(getCor(corJogador));
-    	if (i == -1) return;
 
     	Peao p = getPeao(corJogador, i);
     	String s = duplas.get(corJogador);
-    	if (s == null) return;
 
     	fim = getCasa(xf, yf);
     	fim.adicionaPeao(p, getCor(s));
-    	exibe();
+    	return i;
     	
     }
     

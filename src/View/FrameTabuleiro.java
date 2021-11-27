@@ -20,7 +20,7 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 	private final String AMARELO = "#b58500";
 	private final String CINZA = "#3b3b3b";
 	private final int RAIO = 30;
-	private final int DIAMETRO = 15; 
+	private final int DIAMETRO = 15;
 	public int qtoJogadores = 0;
 	public boolean dupla = false;
 	
@@ -36,6 +36,11 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 	private Image dadoAtual1 = Imagem.get("Dado1");
 	private Image dadoAtual2 = Imagem.get("Dado1");
 	private Image dadoCorAtual = Imagem.get("DadoAmarelo");
+	private int dado1 = 1;
+	private int dado2 = 1; 
+	private String dado3 = "Vermelho";
+	private int[] inicio = new int[] {0, 0};
+	private int[] fim = new int[] {0, 0};
 	
 	private Image peaoPreto = Imagem.get("peaoPreto");
 	private Image peaoAzul = Imagem.get("peaoAzul");
@@ -43,14 +48,16 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 	private Image peaoAmarelo = Imagem.get("peaoAmarelo");
 	public String vezAtual  = "Verde";
 	
+	private int flagDado = 0;
+	
 	private String []numOpcoes = new String[]{"1", "2", "3", "4", "5", "6", "Aleatório"};
 	private String []corOpcoes = new String[] {"Amarelo", "Verde", "Preto", "Azul", "Aleatório"};
 	
 	
-	public int [][]posAzul = new int[6][2]; 
-	public int [][]posVerde = new int[6][2]; 
-	public int [][]posPreto = new int[6][2]; 
-	public int [][]posAmarelo = new int[6][2]; 
+	public int [][]posAzul = new int[6][2];
+	public int [][]posVerde = new int[6][2];
+	public int [][]posPreto = new int[6][2];
+	public int [][]posAmarelo = new int[6][2];
 	
 	public int [][]pecasEspeciais = new int[12][2];
 	
@@ -58,12 +65,13 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 	private int ndado1;
 	private int ndado2;
 	
-	private ObservadoButton b = new ObservadoButton(this);
-	private ObservadoInfo novo;
+	/*
+	//private ObservadoButton b = new ObservadoButton(this);
+	//private ObservadoInfo novo;
 	
 	public ObservadoButton getObervadoButton() {
 		return this.b;
-	}
+	}*/
 	
 	public void setndado1(int n) {
 		this.ndado1 = n;
@@ -73,13 +81,13 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 		this.ndado2 = n;
 	}
 	
-	public FrameTabuleiro(ObservadoInfo novo, int qtoJogadores, boolean dupla) {
+	public FrameTabuleiro(/*ObservadoInfo novo, */int qtoJogadores, boolean dupla) {
 		
 		this.setVisible(true);	
 
-		this.novo = novo;
+		//this.novo = novo;
 		
-		ObservadorInfo novo2 = new ObservadorInfo(novo, this);
+		//ObservadorInfo novo2 = new ObservadorInfo(novo, this);
 		
 		
 		this.dupla = dupla;
@@ -165,6 +173,10 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 		return this.botaoApertado;
 	}
 
+	public void incrementaPontuação(String j) {
+		pontos.put(j, pontos.get(j) + 1);	
+	}
+	
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -176,9 +188,9 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
         g2d.drawImage(carta, 317, 567, 120, 100, null);
         
         //desenha os dados
-        g2d.drawImage(dadoAtual1, 770, 30, null);
-        g2d.drawImage(dadoAtual2, 920, 30, null);
-        g2d.drawImage(dadoCorAtual, 1070, 30, null);
+        g2d.drawImage(Imagem.get("Dado", dado1), 770, 30, null);
+        g2d.drawImage(Imagem.get("Dado", dado2), 920, 30, null);
+        g2d.drawImage(Imagem.get("Dado" + dado3), 1070, 30, null);
         
         //desenha botoes
         g2d.setColor(Color.decode(CINZA));
@@ -318,68 +330,60 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 	@Override
     public void mouseClicked(MouseEvent e) {
     	Point p = e.getPoint();
-    	int x, y, val1, val2, val3;
+    	int x, y;
         x = (int) p.getX();
         y = (int) p.getY();
         
         System.out.printf("x= %d y=%d\n", x, y);
         
-        if ((x >= 900 && x <= 1030) && (y >= 210 && y <= 270)) {
-        	String dado1 = (String)opcaoNum1.getSelectedItem();
-        	String dado2 = (String)opcaoNum2.getSelectedItem();
-        	String dado3 = (String)opcaoCor.getSelectedItem();
-
+        if (flagDado == 0 && (x >= 900 && x <= 1030) && (y >= 210 && y <= 270)) {
+        	String val1 = (String)opcaoNum1.getSelectedItem();
+        	String val2 = (String)opcaoNum2.getSelectedItem();
+        	String val3 = (String)opcaoCor.getSelectedItem();
+        	setDado1(val1);
+        	setDado2(val2);
+        	setDado3(val3);
+        	this.repaint();
+        	flagDado = 0;
+        	
+        	if (dado1 == dado2 && dado3 != vezAtual) Controller.controller.passaVez();
+/*
         	if (dado1.equals("Aleatório") && dado2.equals("Aleatório")) {
-        		/*val1 = (int)(Math.random()*6) + 1;
-        		val2 = (int)(Math.random()*6) + 1; */
         		
         		this.botaoApertado = 1;
         		
         		b.varrerDados();
-        		//System.out.printf("Joga dado 1 Aleatório ==> %d\n", val1);
-        		//System.out.printf("Joga dado 2 Aleatório ==> %d\n", val2);
         	}
 
         	else if (dado1.equals("Aleatório")) {
-        		val1 = (int)(Math.random()*6) + 1;
-        		val2 = Integer.parseInt(dado2);
-        		System.out.printf("Joga dado 1 Aleatório ==> %d\n", val1);
+        		dado1 = "Aleatório";
+        		dado2 = Integer.parseInt(dado2);
         	}
         	
         	else if (dado2.equals("Aleatório")){
-        		val1 = Integer.parseInt(dado1);
-        		val2 = (int)(Math.random()*6) + 1;
-        		System.out.printf("Joga dado 2 Aleatório ==> %d\n", val2);
+        		ndado1 = Integer.parseInt(dado1);
+        		ndado2 = (int)(Math.random()*6) + 1;
         	}
         	
         	else {
-        		val1 = Integer.parseInt(dado1);
-        		val2 = Integer.parseInt(dado2);
-        		//dadoAtual1 = Imagem.get("Dado", Integer.parseInt(dado1));
-        		//dadoAtual2 = Imagem.get("Dado", Integer.parseInt(dado2));
+        		ndado1 = Integer.parseInt(dado1);
+        		ndado2 = Integer.parseInt(dado2);
         	}
         	
         	if (dado3.equals("Aleatório")) {
-        		val3 = (int)(Math.random()*4);
         		dado3 = this.corOpcoes[val3];
         		
-        		
         	}
-
-    		dadoAtual1 = Imagem.get("Dado", ndado1);
-    		dadoAtual2 = Imagem.get("Dado", ndado2);
-    		dadoCorAtual = Imagem.get("Dado" + dado3);
-    		this.repaint();
-        	
-        	
+*/
 
         }
         
-        if (x < 738) calculaLatLong(x, y); 
+        if (flagDado == 1 && x < 738) {
+        	if (dado1 == dado2) Controller.controller.jogaEspecial(x, y, dado3);
+        }
         	
         else if ((x >= 900 && x <= 1030) && (y >= 300 && y <= 430)) {
         	System.out.println("Clicou no botão Salvar");
-        	atualizaVetorPeao(0, "Amarelo", 380, 372);
         	this.repaint();
         }
     }
@@ -495,15 +499,9 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
 
     	//Corrige polos e fora do tabuleiro
     	if (latitude == -1 || latitude == 12 || latitude == -2) longitude = latitude;
-    	
-    	System.out.printf("\nx=%d, y=%d, lat=%d, long=%d\n", x, y, latitude, longitude);
-    	
-    	calculaPosicao(latitude, longitude, 0);
-    	calculaPosicao(latitude, longitude, 1);
-    	if (latitude > 2 && latitude < 9) calculaPosicao(latitude, longitude, 2);
     }
     
-    public int[] calculaPosicao(int latitude, int longitude, int pos) {
+    public void mudaPosicao(int latitude, int longitude, int pos, String cor, int id) {
     	int x, y;
     	double theta;
     	
@@ -526,11 +524,24 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
     		x = (int)((50 + 26*latitude)*Math.cos(theta));
     		y = (int)((50 + 26*latitude)*Math.sin(theta));
     	}
-    	
-    	return new int[] {x,y};
+
+    	if (cor == "Amarelo") {
+    		posAmarelo[id][0] = x;
+    		posAmarelo[id][1] = y;
+    	}
+    	else if (cor == "Azul") {
+    		posAzul[id][0] = x;
+    		posAzul[id][1] = y;
+    	}
+    	else if (cor == "Verde") {
+    		posVerde[id][0] = x;
+    		posVerde[id][1] = y;
+    	}
+    	else if (cor == "Preto") {
+    		posPreto[id][0] = x;
+    		posPreto[id][1] = y;
+    	}
     }
-    
-    
     
     private void inicializaVetores() {
     	for (int i =0; i < 6; i++) {
@@ -585,7 +596,7 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
     		this.posAmarelo[idPeca][1] = y;
     	}
     	else {
-    		System.out.println("Cor nao identidicado.");
+    		System.out.println("Cor nao identidicada.");
     	}
     }
     
@@ -593,5 +604,31 @@ public class FrameTabuleiro extends JFrame implements MouseListener{
     	this.pecasEspeciais[idFicha][0] = x;
     	this.pecasEspeciais[idFicha][1] = y;
     }
+   
+    
+
+    public int getDado1() { return dado1; }
+    
+    public int getDado2() { return dado2; }
+    
+    public String getDado3()  { return dado3; }
+
+    public void setDado1(String s) {
+    	if (s == "Aleatório") dado1 = (int) (Math.random()*6 + 1);
+    	else dado1 = Integer.valueOf(s); 
+    	}
+    
+    public void setDado2(String s) {
+    	if (s == "Aleatório") dado2 = (int) (Math.random()*6 + 1);
+    	else dado2 = Integer.valueOf(s); 
+    	}
+    
+    public void setDado3(String s) {
+    	if (s == "Aleatório") dado3 = corOpcoes[(int)(Math.random()*4)];
+    	else dado3 = s; 
+    	}
  
+    public void setFlag(int n) { flagDado = n; }
+    
+    public void setVezAtual(String s) { vezAtual = s; }
 }
