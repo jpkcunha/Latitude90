@@ -133,13 +133,13 @@ class Tabuleiro{
     
     
     protected int verificaJogada(Jogador j, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
-    	
+    	System.out.printf("Verifica jogada de (%d, %d) para (%d, %d) - %d e %d\n", xIni, yIni, xFin, yFin, n1, n2);
     	//Verifica se o peão do jogador está na casa de inicio do movimento
     	int pos;
     	if (xIni == -1) pos = this.poloSul.verificaPolo(j);
     	else if (xIni == 12) pos = this.poloNorte.verificaPolo(j);
     	else pos = this.board[xIni][yIni].verificaPeao(j);
-    	
+    	System.out.printf("Pos=%d\n", pos);
     	//Jogador não contém peão dentro da casa inicial
     	if (pos == -1) return 0;
     	

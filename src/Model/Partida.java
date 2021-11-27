@@ -67,8 +67,8 @@ public class Partida {
     		p = this.t.getPolo(polo);
     		if (p.getPeoes()[0] != -1) pos = 1; //Os pinos de um jogador já foram adicionados
     		for (int k = 6*pos; k < 6*(pos+1); k++) {
-    			p.adicionaPeao(j.getPeoes()[i], getCor(duplas.get(ordem[i])));
-    			System.out.printf("Peao %d do jogador %s\n", k, getCorInv(j.getCor()));
+    			p.adicionaPeao(j.getPeoes()[k-6*pos], getCor(duplas.get(ordem[i])));
+    			System.out.printf("Peao %d do jogador %s\n", k-6*pos, getCorInv(j.getCor()));
     		}
     	}
     }
