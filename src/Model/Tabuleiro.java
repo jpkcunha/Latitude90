@@ -114,39 +114,39 @@ class Tabuleiro{
     //y -> latitude
     private boolean verificaMovimento(int xIni, int yIni, int xFin, int yFin, int n) {
     	System.out.printf("Verifica movimento de (%d, %d) para (%d, %d) - pode andar %d\n", xIni, yIni, xFin, yFin, n);
-    	System.out.println("Está no polo sul?");
+    	//System.out.println("Está no polo sul?");
     	//PoloSul
     	if (yIni == -1) return verificaBaixo(xFin, yIni, yFin, n);
 
-    	System.out.println("Está no polo norte?");
+    	//System.out.println("Está no polo norte?");
     	//PoloNorte
     	if (yIni == 12) return verificaCima(xFin, yIni, yFin, n);
 
 
-    	System.out.println("Vertical sem chegar nos polos?");
+    	//System.out.println("Vertical sem chegar nos polos?");
     	//Movimentação vertical sem chegar nos polos
     	if (xIni == xFin) {
 	    	if (n <= 12 - xIni && verificaBaixo(xIni, yIni, yFin, n)) return true;
 	    	if (n <= xIni + 1 && verificaCima(xIni, yIni, yFin, n)) return true;
     	}
     	
-    	System.out.println("Passa pelo polo?");
+    	//System.out.println("Passa pelo polo?");
     	//Chega no polo - movimentação para baixo em qualquer longitude
     	if ((verificaCima(xIni, yIni, -1, yIni + 1) && n >= yIni + 1) || verificaBaixo(xIni, yIni, 12, 12 - yIni))
     		return verificaBaixo(xFin, -1, yFin, n - (yIni + 1)) || verificaCima(xFin, 12, yFin, n - (12 - yIni));
     	
-    	System.out.println("Está na mesma latitude?");
+    	//System.out.println("Está na mesma latitude?");
     	//Movimentação dentro da mesma latitude
     	if (yIni == yFin) return verificaDireita(xIni, xFin, yIni, n) || verificaEsquerda(xIni, xFin, yIni, n); 
     	
-    	System.out.println("Movimento inválido");
+    	//System.out.println("Movimento inválido");
     	return false;
     	
     }
     
     
     protected int verificaJogada(Jogador j, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
-    	System.out.printf("Verifica jogada de (%d, %d) para (%d, %d) - %d e %d\n", xIni, yIni, xFin, yFin, n1, n2);
+    	//System.out.printf("Verifica jogada de (%d, %d) para (%d, %d) - %d e %d\n", xIni, yIni, xFin, yFin, n1, n2);
     	//Verifica se o peão do jogador está na casa de inicio do movimento
     	int maior, menor;
     	if (n1 > n2) {
@@ -157,8 +157,8 @@ class Tabuleiro{
     		maior = n2;
     		menor = n1;
     	}
-    	System.out.println(maior);
-    	System.out.println(menor);
+    	//System.out.println(maior);
+    	//System.out.println(menor);
     	
     	//A jogada é possível utilizando somente o menor dado? (inclui passar pelos polos)
     	if (verificaMovimento(xIni, yIni, xFin, yFin, menor)) return menor;

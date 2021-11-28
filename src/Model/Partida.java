@@ -80,6 +80,7 @@ public class Partida {
     public int movePeao(int xi, int yi, int xf, int yf, String corJogador) {
     	Casa inicio, fim;
     	inicio = getCasa(xi, yi);
+    	//printar lista cores e lista peoes
     	int i = inicio.retiraPeao(getCor(corJogador));
 
     	Peao p = getPeao(corJogador, i);
@@ -155,7 +156,12 @@ public class Partida {
     
     public Peao getPeao(String cor, int i) {
     	Jogador j = getJogador(cor);
-    	if (j == null) return null;
+    	System.out.printf("=====> %d\n", i);
+    	System.out.println(j.getPeoes()[i]);
+    	if (j == null) {
+    		System.out.println("dshfhasdfkljasdhkfjlasdhk");
+    		return null;
+    	}
     	if (i >= 0 && i < 6) return j.getPeoes()[i];
     	return null; //Erro
     }

@@ -30,7 +30,7 @@ public class controller {
 
 		}
 		ObservadoInfo novo = new ObservadoInfo(p);
-		this.t = new FrameTabuleiro( 2, false );
+		this.t = new FrameTabuleiro(this, 2, false );
 		
 		//ObservadorButton b = new ObservadorButton(novo , t.getObervadoButton() ,p, "Vermelho");
 		
@@ -130,14 +130,21 @@ public class controller {
 		t.mudaPosicao(yf, xf, pos, cor, id);
 	}
 	
-	public void verificaJogada(String cor, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
-		if (p.verificaJogada(cor, xIni, yIni, xFin, yFin, n1, n2) > 0) {
-			//move
-			//verifica se come
-			//verifica especial
-		}
-		
+	public int verificaJogada(String cor, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
+		return p.verificaJogada(cor, xIni, yIni, xFin, yFin, n1, n2); 
 	}
+	
+	
+	/*
+	 * verifica jogada false ==> tenta dnv()
+	 * verifica jogada true ==> move peao model, retorna indice e pos
+	 * move peao int grafica
+	 * verifica se come ==> true, chama funcao comePeao
+	 * false ==> verifica se especial
+	 * true: efeito carta
+	 * false: nada
+	 * se andou com 
+	 */
 	
     public void passaVez() {
     	p.passaVez();
