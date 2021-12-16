@@ -1,4 +1,4 @@
-package Test;
+package test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,8 @@ class TabuleiroTest {
 		fail("Not yet implemented");
 	}
 	*/
-
+	//Testar movimentação
+	
 	@Test
 	void testGetPoloSul() {
 		Tabuleiro t = new Tabuleiro();

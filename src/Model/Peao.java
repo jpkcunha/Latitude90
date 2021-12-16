@@ -1,26 +1,40 @@
 package Model;
 
-public class Peao {
+class Peao {
 
     Cor c;
     private int id;
+    private boolean finalizado;
 
+    protected Peao(Cor c, int id) {
+    	this.c = c;
+    	this.id = id;
+    	this.finalizado = false;
+    }
 
-    public void setId(int id) {
+    protected void setId(int id) {
         this.id = id;
     }
 
-    public void setCor(Model.Cor c) {
+    protected void setCor(Model.Cor c) {
         this.c = c;
     }
 
-    public int getId() {
+    protected void finalizar() {
+    	this.finalizado = true;
+    }
+    
+    protected int getId() {
         return id;
     }
 
 
-    public Model.Cor getCor() {
+    protected Model.Cor getCor() {
         return c;
+    }
+
+    protected boolean getFinalizado() {
+        return finalizado;
     }
 
 }

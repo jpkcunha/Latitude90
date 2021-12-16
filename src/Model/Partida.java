@@ -1,9 +1,8 @@
 package Model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 public class Partida {
@@ -11,247 +10,198 @@ public class Partida {
     * Pode ser que eu tenha que inicializar esses atributos
     *
     * */
-    private  int numJogadores;
-    private boolean isDupla;
-    private List<Jogador> ordem;
-    private Tabuleiro t;
+	private static Partida p=null;
+	
+    public  int numJogadores;
+    public boolean isDupla;
+    public Tabuleiro t;
+    public HashMap<String, String> duplas;
+    public Queue<String> filaJogadores;
+    private int dado1 = -1;
+    private int dado2 = -1;
+    private String dado3;
 
-    public Partida(){
+    private HashMap<String,Jogador> listaJogadores;
+    private String[] coresDado = new String[] {"Amarelo", "Verde", "Preto", "Azul", "Aleatório"};
 
-        Scanner s = new Scanner(System.in);
-        List<Model.Cor> jaFoi = new ArrayList<>();
-
-        System.out.println("Vocês jogarão em dupla? [SIM/NAO]");
-        
-        
-        String resp = s.next();
-        
-        
-        //System.out.println(resp);
-        if (resp.equals("SIM")) {
-        	this.isDupla = true;
-            this.numJogadores = 4;
-        }
-
-        else {
-        	this.isDupla = false;
-            System.out.println("Numero de jogadores: ");
-            this.numJogadores = s.nextInt();
-        }
-
-        //algoritmo para escolher a cor
-        while (jaFoi.size() != this.numJogadores){
-        	System.out.println(numJogadores);
-        	
-            int x;
-            Model.Cor corEscolhida;
-
-            System.out.println("Selecione uma cor: AMARELO [0], VERDE [1], AZUL [2], PRETO [3]");
-            x = s.nextInt();
-            
-            
-            if (x >= 0 && x <= 4) {
-            	corEscolhida = Model.Cor.values()[x];
-            	//System.out.printf("Cor: %s\n", corEscolhida);
-            	
-            	if(!jaFoi.contains(corEscolhida)) {
-            		
-            		jaFoi.add(corEscolhida);
-            		
-            		System.out.printf("Cor adicionada com sucesso! JaFoi tem %d elementos\n", jaFoi.size());
-            	}
-            	
-            }
-
-            
-        }
-
-        //s.close();
-
-        ordem = new ArrayList<>();
-        escolheOrdem(jaFoi);
-        
-        //tabuleuiro preenchido
-
-        t = new Tabuleiro();
-
+    
+    private Partida(){}
+    
+    //Singleton
+    public static Partida getPartida() {
+    	if (p == null) p = new Partida();
+    	return p;
     }
-
-    private void escolheOrdem(List<Model.Cor> l){
+    
+    public void iniciaPartida(int nJog, boolean dupla, String[] ordem, HashMap<String, Integer> inicio, HashMap<String, String> hashDuplas) {
+    	this.numJogadores = nJog;
+    	this.isDupla = dupla;
+    	this.t = new Tabuleiro();
+    	this.duplas = new HashMap<>();
+    	this.filaJogadores = new LinkedList<>();
+    	this.listaJogadores = new HashMap<>();
     	
+    	for (int i = 0; i < nJog; i++) {
+    		Cor c = getCor(ordem[i]);
+    		int polo = inicio.get(ordem[i]);
+    		Jogador j = new Jogador(c, polo);
+    		duplas.put(ordem[i], hashDuplas.get(ordem[i]));
+    		filaJogadores.add(ordem[i]);
+    		listaJogadores.put(ordem[i], j);
+    	}	
 
-        Scanner s = new Scanner(System.in);
-        System.out.println("Vamos ver quem começa!!");
-
-        int n = 0;
-        Model.Cor maior = Model.Cor.VERMELHO1;
-        Dado d = new Dado();
-        
-        for (int i = 0; i < numJogadores; i++) {
-            int atual = d.getNumAleatorio(6, 1);
-            System.out.printf("Jogador %s: você jogou o dado e saiu %d\n", l.get(i).toString(), atual);
-            
-            if (atual > n) {
-            	n = atual;
-            	maior = l.get(i);
-            	}
-        }
-        s.close();
-        
-        
-        int cont = 0;
-        Jogador p = new Jogador(maior, cont++);
-        ordem.add(p);
-        
-        if (maior == Model.Cor.PRETO) {
-        	if (l.contains(Model.Cor.AZUL)) {
-        		ordem.add(new Jogador(Model.Cor.AZUL, cont++));
-        	}
-        	if (l.contains(Model.Cor.AMARELO)) {
-        		ordem.add(new Jogador(Model.Cor.AMARELO, cont++));
-        	}
-        	if (l.contains(Model.Cor.VERDE)) {
-        		ordem.add(new Jogador(Model.Cor.VERDE, cont++));
-        	}
-        }
-        
-        else if (maior == Model.Cor.AZUL) {
-        	if (l.contains(Model.Cor.AMARELO)) {
-        		ordem.add(new Jogador(Model.Cor.AMARELO, cont++));
-        	}
-        	if (l.contains(Model.Cor.VERDE)) {
-        		ordem.add(new Jogador(Model.Cor.VERDE, cont++));
-        	}
-        	if (l.contains(Model.Cor.PRETO)) {
-        		ordem.add(new Jogador(Model.Cor.PRETO, cont++));
-        	}
-        }
-        
-        else if (maior == Model.Cor.AMARELO) {
-        	if (l.contains(Model.Cor.VERDE)) {
-        		ordem.add(new Jogador(Model.Cor.VERDE, cont++));
-        	}
-        	if (l.contains(Model.Cor.PRETO)) {
-        		ordem.add(new Jogador(Model.Cor.PRETO, cont++));
-        	}
-        	if (l.contains(Model.Cor.AZUL)) {
-        		ordem.add(new Jogador(Model.Cor.AZUL, cont++));
-        	}
-        }
-        
-        
-        else if (maior == Model.Cor.VERDE) {
-        	if (l.contains(Model.Cor.PRETO)) {
-        		ordem.add(new Jogador(Model.Cor.PRETO, cont++));
-        	}
-        	if (l.contains(Model.Cor.AZUL)) {
-        		ordem.add(new Jogador(Model.Cor.AZUL, cont++));
-        	}
-        	if (l.contains(Model.Cor.AMARELO)) {
-        		ordem.add(new Jogador(Model.Cor.AMARELO, cont++));
-        	}
-        }
-        
-
-        System.out.printf("O jogador a começar é o %s\n", maior.toString());
-        
-
+    	preenchePolos(ordem);
+    	System.out.println(this.numJogadores);
+    	System.out.println(inicio.get(ordem[0]));
+    	System.out.println(inicio.get(ordem[1]));
+    	System.out.println(inicio.get(ordem[2]));
+    	System.out.println(inicio.get(ordem[3]));
+    	System.out.println(getVez());
+    	
     }
 
-    //y -> latitude -> raio
-    //x -> longitude -> theta
-    public int criaPartida(){
-
-        Scanner s = new Scanner(System.in);
-        Dado d1 = new Dado();
-        Dado dCor = new Dado();
-
-        int valorD1,valorD2;
-        int latitudeIni, longitudeIni, latitudeFim, longitudeFim;
-
-        int cont = 5;
-        while(cont-- > 0){
-        	System.out.printf("==> Rodadas para acabar: %d\n", cont);
-            //rodada
-            for(int i = 0; i < this.ordem.size(); i++){
-
-
-                System.out.printf("%s, sua vez de jogar!\n", ordem.get(i).getCor());
-
-                valorD1 = d1.getNumAleatorio(6,1);
-                valorD2 = d1.getNumAleatorio(6,1);
-                System.out.printf("Você tirou %d e %d!%n", valorD1, valorD2);
-                
-                latitudeIni = d1.getNumAleatorio(5, 0);
-                longitudeIni = d1.getNumAleatorio(5, 0);
-                latitudeFim = d1.getNumAleatorio(5, 0);
-                longitudeFim = d1.getNumAleatorio(5, 0);
-
-                System.out.printf("Casa inicial: longitude %d e latitude %d\n", longitudeIni, latitudeIni);
-                System.out.printf("Casa final: longitude %d e latitude %d\n", longitudeFim, latitudeFim);
-
-                Casa inicio = t.getBoard()[longitudeIni][latitudeIni];
-                Casa fim = t.getBoard()[longitudeFim][latitudeFim];
-                
-                int n = t.verificaJogada(ordem.get(i), inicio, fim, valorD1, valorD2);
-
-                if (n == valorD1)
-                    System.out.println("Movimentação liberada com o dado 1!");
-                else if (n == valorD2)
-                    System.out.println("Movimentação liberada com o dado 2!");
-                else if (n == valorD1 + valorD2)
-                    System.out.println("Movimentação liberada com os dados 1 e 2!");
-                else
-                    System.out.println("Parece que você não pode se mover para lá!");
-                System.out.println(n);
-                /* Movimentação do usuario com base na latitude e longitude
-                 
-                System.out.println("Escolha com qual peao você quer andar.");
-                System.out.printf("Latitude: ");
-                
-                latitudeIni = s.nextInt();
-                System.out.printf("Longitude: ");
-                
-                longitudeIni = s.nextInt();
-
-                System.out.println("Agora, escolha para onde quer andar...");
-                System.out.printf("Latitude: ");
-                latitudeFim = s.nextInt();
-                System.out.printf("Longitude: ");
-                longitudeFim = s.nextInt();
-
-                
-                Casa inicio, fim;
-                
-                if (latitudeIni == -1) inicio = t.getPoloSul();
-                else if (latitudeIni == 12) inicio = t.getPoloNorte();
-                else inicio = t.getBoard()[longitudeIni][latitudeIni];
-                
-                if (latitudeFim == -1) fim = t.getPoloSul();
-                else if (latitudeFim == 12) fim = t.getPoloNorte();
-                else fim = t.getBoard()[longitudeFim][latitudeFim];
-                
-                int n = t.verificaJogada(ordem.get(i), inicio, fim, valorD1, valorD2);
-
-                if (n == valorD1)
-                    System.out.println("Movimentação liberada com o dado 1!");
-                else if (n == valorD2)
-                    System.out.println("Movimentação liberada com o dado 2!");
-                else if (n == valorD1)
-                    System.out.println("Movimentação liberada com os dados 1 e 2!");
-                else
-                    System.out.println("Parece que você não pode se mover para lá!");
-            }
-
-			*/
-
-            }
-        }
-        return 0;
+    private void preenchePolos(String[] ordem) {
+    	int polo, pos;
+    	Jogador j;
+    	Casa p;
+    	for (int i = 0; i < numJogadores; i++) {
+    		pos = 0;
+    		j = listaJogadores.get(ordem[i]);
+    		polo = j.getInicio();
+    		p = this.t.getPolo(polo);
+    		if (p.getPeoes()[0] != -1) pos = 1; //Os pinos de um jogador já foram adicionados
+    		for (int k = 6*pos; k < 6*(pos+1); k++) {
+    			p.adicionaPolo(j.getPeoes()[k-6*pos], getCor(duplas.get(ordem[i])));
+    			System.out.printf("Peao %d do jogador %s\n", k-6*pos, getCorInv(j.getCor()));
+    		}
+    	}
     }
 
+    public int movePeao(int xi, int yi, int xf, int yf, String corJogador) {
+    	Casa inicio, fim;
+    	inicio = getCasa(xi, yi);
+    	//printar lista cores e lista peoes
+    	int i = inicio.retiraPeao(getCor(corJogador));
 
+    	Peao p = getPeao(corJogador, i);
+    	String s = duplas.get(corJogador);
+
+    	fim = getCasa(xf, yf);
+    	fim.adicionaPeao(p, getCor(s));
+    	return i;
+    	
+    }
+    
+    
+    public String getVez() {
+    	return this.filaJogadores.peek();
+    }
+    
+    public void passaVez() {
+    	String anterior = this.filaJogadores.remove();
+    	this.filaJogadores.add(anterior);
+    	System.out.printf("%s passou a vez! Vez do %s!\n", anterior, getVez());
+    	
+    }
+    
+    
+    
+    public int jogaDadoNum() { return (int) (Math.random()*6 + 1); }
+    
+    public String jogaDadoCor() { return coresDado[(int)(Math.random()*4)]; }
+   
+    
+    public void finalizaPeao(String cor, int i) {
+    	Peao p = getPeao(cor, i);
+    	Jogador j = getJogador(cor);
+    	j.adicionaFinalizado();
+    	p.finalizar();
+    	
+    }
+    
+    public int verificaJogada(String cor, int xIni, int yIni, int xFin, int yFin, int n1, int n2) {
+    	return this.t.verificaJogada(getJogador(cor), xIni, yIni, xFin, yFin, n1, n2);
+    }
+
+    // Get - atributos da classe Partida
     public int getNumJogadores() {
-        return numJogadores;
+    	return numJogadores;
     }
+
+    // Get - classes do Model
+    public Cor getCor(String s) {
+    	if (s.equals("Amarelo")) return Cor.AMARELO;
+    	else if (s.equals("Azul")) return Cor.AZUL;
+    	else if (s.equals("Preto")) return Cor.PRETO;
+    	else if (s.equals("Verde")) return Cor.VERDE;
+    	else return Cor.VERMELHO1;
+    }
+    
+    protected String getCorInv(Cor c) {
+    	if (c == Cor.AMARELO) return "Amarelo";
+    	else if (c == Cor.AZUL) return "Azul";
+    	else if (c == Cor.PRETO) return "Preto";
+    	else if (c == Cor.VERDE) return "Verde";
+    	else return "Vermelho";
+    }
+    
+    public Casa getCasa(int x, int y){
+    	if (x == -1) return this.t.getPolo(0);
+    	else if (y == 12) return this.t.getPolo(1);
+    	else if (x >= 0 && x <= 11 && y >= 0 && y <= 11) return this.t.getBoard()[x][y];
+    	else return null; //Erro
+    }
+    
+    public Jogador getJogador(String s) { return listaJogadores.get(s); }
+    
+    public Peao getPeao(String cor, int i) {
+    	Jogador j = getJogador(cor);
+    	System.out.printf("=====> %d\n", i);
+    	System.out.println(j.getPeoes()[i]);
+    	if (j == null) {
+    		System.out.println("dshfhasdfkljasdhkfjlasdhk");
+    		return null;
+    	}
+    	if (i >= 0 && i < 6) return j.getPeoes()[i];
+    	return null; //Erro
+    }
+
+    public int getInicio(String cor) {
+    	Jogador j = getJogador(cor);
+    	return j.getInicio();
+    }
+    
+    public int getFim(String cor) {
+    	Jogador j = getJogador(cor);
+    	return 1-j.getInicio();
+    }
+    
+    public int[] getPeoes(int x, int y) {
+    	return getCasa(x, y).getPeoes();
+    }
+    
+    public String[] getCores(int x, int y) {
+    	Cor[] aux;
+    	String[] s = new String[2];
+    	aux = getCasa(x, y).getCores();
+    	s[0] = getCorInv(aux[0]);
+    	s[1] = getCorInv(aux[1]);
+    	return s;
+    	
+    }
+    
+    public int getSpecial(int x, int y) { return getCasa(x, y).getIsSpecial(); }
+    
+    public int getDado1() { return dado1; }
+    
+    public int getDado2() { return dado2; }
+    
+    public String getDado3()  { return dado3; }
+
+    public void setDado1() { dado1 = jogaDadoNum(); }
+    
+    public void setDado2() { dado2 = jogaDadoNum(); }
+    
+    public void setDado3() { dado3 = jogaDadoCor(); }
+
 }
